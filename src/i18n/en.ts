@@ -19,6 +19,6 @@ export const en = {
     alt: 'Flag of',
     unavailable: 'Image unavailable',
   },
-} as const;
+};
 
 export type TranslationKeys = typeof en;

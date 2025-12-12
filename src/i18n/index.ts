@@ -33,6 +33,7 @@ type TranslationKey = NestedKeyOf<TranslationKeys>;
 
 export function t(key: TranslationKey): string {
   const keys = key.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let value: any = translations[currentLanguage];
   
   for (const k of keys) {

@@ -1,12 +1,12 @@
 // Game page component
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Country } from '../data/countries';
 import { countries } from '../data/countries';
 import { GameState } from '../types';
 import { buildQuestion } from '../lib/game';
 import { t } from '../i18n';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
 import { LanguageToggle } from './LanguageToggle';
 
