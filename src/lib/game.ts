@@ -52,10 +52,10 @@ export function buildQuestion(
   const incorrect: Country[] = [];
   const availableIncorrect = countries.filter((c) => c.code !== correct.code);
   
-  while (incorrect.length < 3 && availableIncorrect.length > 0) {
-    const randomIndex = Math.floor(Math.random() * availableIncorrect.length);
-    const picked = availableIncorrect.splice(randomIndex, 1)[0];
-    incorrect.push(picked);
+  // Use Fisher-Yates shuffle and take first 3 for O(n) complexity
+  const shuffledIncorrect = shuffle(availableIncorrect);
+  for (let i = 0; i < Math.min(3, shuffledIncorrect.length); i++) {
+    incorrect.push(shuffledIncorrect[i]);
   }
   
   // Combine and shuffle all options
