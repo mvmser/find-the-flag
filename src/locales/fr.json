@@ -1,0 +1,16 @@
+{
+  "game": {
+    "title": "Trouve le Drapeau",
+    "subtitle": "Devinez le pays à partir de son drapeau!",
+    "start": "Commencer",
+    "score": "Score",
+    "round": "Manche",
+    "lives": "Vies",
+    "gameOver": "Jeu Terminé",
+    "playAgain": "Rejouer"
+  },
+  "ui": {
+    "language": "Langue",
+    "settings": "Paramètres"
+  }
+}

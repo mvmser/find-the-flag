@@ -1,0 +1,16 @@
+{
+  "game": {
+    "title": "Find the Flag",
+    "subtitle": "Guess the country from its flag!",
+    "start": "Start Game",
+    "score": "Score",
+    "round": "Round",
+    "lives": "Lives",
+    "gameOver": "Game Over",
+    "playAgain": "Play Again"
+  },
+  "ui": {
+    "language": "Language",
+    "settings": "Settings"
+  }
+}
