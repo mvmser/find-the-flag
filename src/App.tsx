@@ -1,12 +1,25 @@
-import './styles/App.css'
+import { useState } from 'react';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { HomePage } from './components/HomePage';
+import { GamePage } from './components/GamePage';
+import './styles/App.css';
+
+type Page = 'home' | 'game';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState<Page>('home');
+
   return (
-    <div className="app">
-      <h1>Find the Flag</h1>
-      <p>Mobile-first flag guessing game - Coming soon!</p>
-    </div>
-  )
+    <LanguageProvider>
+      <div className="app">
+        {currentPage === 'home' ? (
+          <HomePage onStartGame={() => setCurrentPage('game')} />
+        ) : (
+          <GamePage onGoHome={() => setCurrentPage('home')} />
+        )}
+      </div>
+    </LanguageProvider>
+  );
 }
 
-export default App
+export default App;

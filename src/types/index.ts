@@ -1,18 +1,18 @@
 // Type definitions for the Find the Flag game
 
-export interface Country {
-  code: string;
-  name: {
-    en: string;
-    fr: string;
-  };
+import { Country } from '../data/countries';
+
+export type { Country };
+
+export interface GameQuestion {
+  correct: Country;
+  options: Country[];
 }
 
 export interface GameState {
-  currentCountry: Country | null;
   score: number;
-  round: number;
-  lives: number;
+  total: number;
+  previousCorrectCode?: string;
 }
 
 export type Language = 'en' | 'fr';
