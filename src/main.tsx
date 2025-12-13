@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './styles/index.css'
+import { t } from './i18n'
+import type { Language } from './types'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -45,23 +47,15 @@ if ('serviceWorker' in navigator) {
 }
 
 function showUpdateNotification(worker: ServiceWorker) {
+  // Check if notification already exists to prevent duplicates
+  const existingNotification = document.querySelector('.update-notification');
+  if (existingNotification) {
+    return; // Don't create duplicate notifications
+  }
+
   // Detect language from localStorage (same as LanguageContext)
-  const storedLanguage = localStorage.getItem('language') as 'en' | 'fr' | null;
-  const language = storedLanguage || 'en';
-  
-  // Bilingual notification texts
-  const texts = {
-    en: {
-      message: 'A new version is available!',
-      button: 'Update Now'
-    },
-    fr: {
-      message: 'Une nouvelle version est disponible!',
-      button: 'Mettre à jour'
-    }
-  };
-  
-  const text = texts[language];
+  const storedLanguage = localStorage.getItem('language') as Language | null;
+  const language: Language = storedLanguage || 'en';
   
   // Create notification element
   const notification = document.createElement('div');
@@ -74,13 +68,13 @@ function showUpdateNotification(worker: ServiceWorker) {
   // Create message paragraph
   const messageP = document.createElement('p');
   messageP.className = 'update-notification-text';
-  messageP.textContent = text.message;
+  messageP.textContent = t('update.available', language);
 
   // Create update button
   const updateBtn = document.createElement('button');
   updateBtn.className = 'btn btn-primary btn-small update-btn';
   updateBtn.type = 'button';
-  updateBtn.textContent = text.button;
+  updateBtn.textContent = t('update.reload', language);
 
   // Assemble elements
   content.appendChild(messageP);
