@@ -203,8 +203,6 @@ Future enhancements planned for this game:
 - [ ] **More Languages**: Spanish, German, Italian, Portuguese, etc.
 - [ ] **Statistics**: Track performance over time with charts
 - [ ] **Share Results**: Share your score on social media
-- [ ] **Statistics**: Track performance over time with charts
-- [ ] **Share Results**: Share your score on social media
 
 ## 📝 License
 
