@@ -4,19 +4,45 @@ import App from './App.tsx'
 import './styles/index.css'
 import { t } from './i18n'
 import type { Language } from './types'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+if (import.meta.env.DEV) {
+  console.log('[Find the Flag] Starting application...');
+}
+
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  console.error('[Find the Flag] Root element not found!');
+  throw new Error('Root element #root not found');
+}
+
+if (import.meta.env.DEV) {
+  console.log('[Find the Flag] Root element found, creating React root...');
+}
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>,
 )
+
+if (import.meta.env.DEV) {
+  console.log('[Find the Flag] React app rendered successfully');
+}
 
 // Register service worker for PWA support with update detection
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    if (import.meta.env.DEV) {
+      console.log('[Find the Flag] Registering service worker...');
+    }
     navigator.serviceWorker.register('/find-the-flag/sw.js')
       .then((registration) => {
-        // Service worker registered successfully
+        if (import.meta.env.DEV) {
+          console.log('[Find the Flag] Service worker registered successfully');
+        }
         
         // Check for updates periodically (every 60 seconds)
         const updateIntervalId = setInterval(() => {
@@ -40,8 +66,9 @@ if ('serviceWorker' in navigator) {
           }
         });
       })
-      .catch(() => {
-        // Service worker registration failed
+      .catch((error) => {
+        console.error('[Find the Flag] Service worker registration failed:', error);
+        // Don't throw - service worker is not critical for app functionality
       });
   });
 }
@@ -54,7 +81,7 @@ function showUpdateNotification(worker: ServiceWorker) {
   }
 
   // Detect language from localStorage (same as LanguageContext)
-  const storedLanguage = localStorage.getItem('language') as Language | null;
+  const storedLanguage = localStorage.getItem('find-the-flag-language') as Language | null;
   const language: Language = storedLanguage || 'en';
   
   // Create notification element

@@ -75,6 +75,11 @@ export const en = {
     available: 'A new version is available!',
     reload: 'Update Now',
   },
+  error: {
+    title: 'Something went wrong',
+    message: 'The application encountered an error. Please try reloading the page.',
+    reloadButton: 'Reload Page',
+  },
 };
 
 export type TranslationKeys = typeof en;
