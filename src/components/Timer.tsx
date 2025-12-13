@@ -32,8 +32,11 @@ export function Timer({ duration, onTimeUp, isActive }: TimerProps) {
   // Keep refs up to date
   useEffect(() => {
     isActiveRef.current = isActive;
+  }, [isActive]);
+
+  useEffect(() => {
     onTimeUpRef.current = onTimeUp;
-  });
+  }, [onTimeUp]);
 
   useEffect(() => {
     if (!isActive) {
@@ -65,24 +68,19 @@ export function Timer({ duration, onTimeUp, isActive }: TimerProps) {
   const percentage = (timeLeft / duration) * 100;
   const isLowTime = timeLeft <= 5;
 
-  const getTimerTextClass = () => {
-    return ['timer-text', isLowTime && 'timer-warning'].filter(Boolean).join(' ');
-  };
-
-  const getTimerBarFillClass = () => {
-    return ['timer-bar-fill', isLowTime && 'timer-bar-warning'].filter(Boolean).join(' ');
-  };
+  const timerTextClass = ['timer-text', isLowTime && 'timer-warning'].filter(Boolean).join(' ');
+  const timerBarFillClass = ['timer-bar-fill', isLowTime && 'timer-bar-warning'].filter(Boolean).join(' ');
 
   return (
     <div className="timer-container">
       <div className="timer-display">
-        <span className={getTimerTextClass()}>
+        <span className={timerTextClass}>
           {t('game.timeLeft', language)}: {timeLeft}s
         </span>
       </div>
       <div className="timer-bar">
         <div 
-          className={getTimerBarFillClass()}
+          className={timerBarFillClass}
           style={{ width: `${percentage}%` }}
         />
       </div>
