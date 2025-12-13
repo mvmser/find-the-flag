@@ -23,8 +23,8 @@ if ('serviceWorker' in navigator) {
           registration.update();
         }, 60000);
 
-        // Clear the interval when the page is unloaded
-        window.addEventListener('unload', () => {
+        // Clear the interval when the page is unloaded (use 'pagehide' for reliability)
+        window.addEventListener('pagehide', () => {
           clearInterval(updateIntervalId);
         });
         // Listen for updates
