@@ -87,7 +87,7 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Activate event - cleanup old caches
+// Activate event - cleanup old caches and take control of clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -96,8 +96,10 @@ self.addEventListener('activate', (event) => {
           if (cacheName !== CACHE_NAME && cacheName !== IMAGE_CACHE_NAME) {
             return caches.delete(cacheName);
           }
-        })
+        }).filter(Boolean)
       );
+    }).then(() => {
+      return self.clients.claim();
     })
   );
 });

@@ -36,6 +36,8 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
   const normalizeText = (text: string): string => {
     return text
+      .normalize('NFD') // Decompose combined characters
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9\s]/g, '')
@@ -206,6 +208,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
               onChange={(e) => setTextInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleTextSubmit()}
               placeholder={t('game.typeCountryName', language)}
+              aria-label={t('game.typeCountryName', language)}
               disabled={answerState !== 'unanswered'}
               autoFocus
             />

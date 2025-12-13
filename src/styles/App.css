@@ -150,7 +150,8 @@
 /* Game Page */
 .game-page {
   min-height: 100vh;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-header {
@@ -159,6 +160,7 @@
   align-items: center;
   margin-bottom: var(--spacing-md);
   gap: var(--spacing-md);
+  flex-shrink: 0;
 }
 
 .game-content {
@@ -166,7 +168,7 @@
   flex-direction: column;
   gap: var(--spacing-md);
   align-items: center;
-  height: calc(100vh - 80px);
+  flex: 1;
   overflow-y: auto;
 }
 
@@ -438,7 +440,7 @@
 
 /* Option Grid Variations */
 .options-grid-6 {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .options-grid-8 {
@@ -599,7 +601,7 @@
     max-width: 100%;
   }
 
-  .options-grid {
+  .options-grid:not(.options-grid-6):not(.options-grid-8) {
     grid-template-columns: 1fr;
     gap: var(--spacing-sm);
   }

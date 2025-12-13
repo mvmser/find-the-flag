@@ -49,7 +49,7 @@ export function loadSettings(): GameSettings {
     if (stored) {
       const parsed = JSON.parse(stored);
       
-      // Validate and sanitize stored settings
+      // Validate and sanitize stored settings - only keep known properties
       const validatedSettings: GameSettings = { ...DEFAULT_SETTINGS };
       
       // Validate optionCount
@@ -72,6 +72,7 @@ export function loadSettings(): GameSettings {
         validatedSettings.gameMode = parsed.gameMode;
       }
       
+      // Return only validated properties, ignoring any obsolete ones from parsed
       return validatedSettings;
     }
   } catch {
