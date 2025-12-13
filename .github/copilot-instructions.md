@@ -120,7 +120,8 @@ export function Component({ onAction }: ComponentProps) {
 ### Class Names
 - Use descriptive, semantic class names
 - Avoid inline styles; use CSS classes
-- Dynamic classes using template literals or `classes.join(' ')`
+- Dynamic classes: build an array of class names and join with `classNames.join(' ')`
+  - Example: `const classNames = ['base-class']; if (condition) classNames.push('modifier'); return classNames.join(' ');`
 
 ## Data Management
 
