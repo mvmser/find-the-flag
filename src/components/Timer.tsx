@@ -31,7 +31,7 @@ export function Timer({ duration, onTimeUp, isActive }: TimerProps) {
   const [timeLeft, setTimeLeft] = useState(duration);
   const isActiveRef = useRef(isActive);
   const onTimeUpRef = useRef(onTimeUp);
-  const isMountedRef = useRef(true);
+  const isMountedRef = useRef(false);
 
   // Keep refs up to date
   useEffect(() => {
