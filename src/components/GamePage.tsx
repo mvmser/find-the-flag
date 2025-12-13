@@ -201,8 +201,12 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
           </div>
         </div>
         
-        <button className="btn btn-secondary share-btn" onClick={handleShare}>
-          📤 {t('game.shareScore', language)}
+        <button
+          className="btn btn-secondary share-btn"
+          onClick={handleShare}
+          title={t('game.shareTotalScoreTooltip', language)}
+        >
+          📤 {t('game.shareTotalScore', language)}
         </button>
 
         {settings.timerEnabled && (
