@@ -717,6 +717,7 @@
   }
   
   .share-btn {
+    min-height: 44px;
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: var(--font-size-sm);
   }
