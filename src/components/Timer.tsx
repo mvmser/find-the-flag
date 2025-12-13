@@ -49,6 +49,7 @@ export function Timer({ duration, onTimeUp, isActive }: TimerProps) {
     }
 
     setTimeLeft(duration);
+    // Reset mounted flag when timer starts (needed after cleanup has set it to false)
     isMountedRef.current = true;
 
     const interval = setInterval(() => {
