@@ -6,7 +6,9 @@ import { t } from './i18n'
 import type { Language } from './types'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
-console.log('[Find the Flag] Starting application...');
+if (import.meta.env.DEV) {
+  console.log('[Find the Flag] Starting application...');
+}
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -14,7 +16,9 @@ if (!rootElement) {
   throw new Error('Root element #root not found');
 }
 
-console.log('[Find the Flag] Root element found, creating React root...');
+if (import.meta.env.DEV) {
+  console.log('[Find the Flag] Root element found, creating React root...');
+}
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
@@ -24,15 +28,21 @@ ReactDOM.createRoot(rootElement).render(
   </React.StrictMode>,
 )
 
-console.log('[Find the Flag] React app rendered successfully');
+if (import.meta.env.DEV) {
+  console.log('[Find the Flag] React app rendered successfully');
+}
 
 // Register service worker for PWA support with update detection
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    console.log('[Find the Flag] Registering service worker...');
+    if (import.meta.env.DEV) {
+      console.log('[Find the Flag] Registering service worker...');
+    }
     navigator.serviceWorker.register('/find-the-flag/sw.js')
       .then((registration) => {
-        console.log('[Find the Flag] Service worker registered successfully');
+        if (import.meta.env.DEV) {
+          console.log('[Find the Flag] Service worker registered successfully');
+        }
         
         // Check for updates periodically (every 60 seconds)
         const updateIntervalId = setInterval(() => {

@@ -1,6 +1,8 @@
 // Error boundary component to catch and display React errors
 
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { t } from '../i18n';
+import type { Language } from '../types';
 
 interface Props {
   children: ReactNode;
@@ -27,10 +29,14 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      // Get language from localStorage (same logic as LanguageContext)
+      const storedLanguage = localStorage.getItem('find-the-flag-language') as Language | null;
+      const language: Language = storedLanguage || 'en';
+
       return (
         <div className="error-boundary">
-          <h1 className="error-boundary__title">Something went wrong</h1>
-          <p className="error-boundary__message">The application encountered an error. Please try reloading the page.</p>
+          <h1 className="error-boundary__title">{t('error.title', language)}</h1>
+          <p className="error-boundary__message">{t('error.message', language)}</p>
           {import.meta.env.DEV && this.state.error && (
             <pre className="error-boundary__details">
               {this.state.error.toString()}
@@ -39,8 +45,10 @@ export class ErrorBoundary extends Component<Props, State> {
           <button
             onClick={() => window.location.reload()}
             className="error-boundary__button"
+            type="button"
+            aria-label={t('error.reloadButton', language)}
           >
-            Reload Page
+            {t('error.reloadButton', language)}
           </button>
         </div>
       );

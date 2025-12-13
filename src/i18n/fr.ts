@@ -77,4 +77,9 @@ export const fr: TranslationKeys = {
     available: 'Une nouvelle version est disponible!',
     reload: 'Mettre à jour',
   },
+  error: {
+    title: 'Une erreur est survenue',
+    message: "L'application a rencontré une erreur. Veuillez recharger la page.",
+    reloadButton: 'Recharger la page',
+  },
 };

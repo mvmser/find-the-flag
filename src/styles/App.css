@@ -949,3 +949,75 @@
   opacity: 0.7;
 }
 
+/* Error Boundary */
+.error-boundary {
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg);
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: var(--radius-lg);
+  font-family: system-ui, -apple-system, sans-serif;
+  max-width: 600px;
+  margin: var(--spacing-lg) auto;
+}
+
+.error-boundary__title {
+  color: #c00;
+  margin-top: 0;
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.error-boundary__message {
+  color: var(--color-text);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+}
+
+.error-boundary__details {
+  background-color: #fafafa;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  overflow: auto;
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  border: 1px solid #ddd;
+}
+
+.error-boundary__button {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.error-boundary__button:hover {
+  background-color: #357abd;
+}
+
+.error-boundary__button:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .error-boundary {
+    background-color: rgba(255, 100, 100, 0.1);
+    border-color: rgba(255, 100, 100, 0.3);
+  }
+
+  .error-boundary__title {
+    color: #ff6b6b;
+  }
+
+  .error-boundary__details {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
