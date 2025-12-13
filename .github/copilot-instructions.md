@@ -4,6 +4,22 @@
 
 Find the Flag is a mobile-first, fully static flag guessing web game built with React, TypeScript, and Vite. The game is bilingual (English and French) and requires no backend server.
 
+### Current Features (v0.4.0)
+
+- **Bilingual Support**: Full English and French translations with instant language switching
+- **Game Modes**: Multiple choice or free-text input
+- **Difficulty Levels**: Easy, Medium, and Hard modes
+- **Customizable Settings**: 
+  - Answer options: 4, 6, or 8 choices
+  - Timer: Configurable duration or disabled
+  - Question count: Set number of questions per game
+  - Pseudonym: Custom player name for score sharing
+- **Score System**: Persistent total score tracking with localStorage
+- **Score Sharing**: Share achievements via encoded URLs
+- **PWA Support**: Installable app with offline capability and service worker
+- **Auto-Update**: Automatic detection of new versions with update notification
+- **Dark Mode**: Automatic theme based on system preferences
+
 ## Tech Stack & Architecture
 
 - **Framework**: React 18 with TypeScript (strict mode)
@@ -108,7 +124,15 @@ export function Component({ onAction }: ComponentProps) {
 - Use `buildQuestion()` to generate questions with 4 options
 
 ### State Management
-- Game state follows `GameState` interface with `score`, `total`, and `previousCorrectCode`
+- Game state follows `GameState` interface with `score`, `total`, `previousCorrectCode`, and `startTime`
+- Game settings follow `GameSettings` interface with:
+  - `optionCount`: 4 | 6 | 8 (number of answer choices)
+  - `timerEnabled`: boolean (whether timer is active)
+  - `timerDuration`: number (seconds for timer)
+  - `gameMode`: 'multiple-choice' | 'free-text'
+  - `questionCount`: number (questions per game)
+  - `difficulty`: 'easy' | 'medium' | 'hard'
+- Settings are persisted in localStorage via `src/utils/storage.ts`
 - Avoid consecutive questions with the same correct answer
 - Update state immutably using spread operators
 
@@ -277,6 +301,46 @@ export function Component({ onAction }: ComponentProps) {
 - **Build Process**: GitHub Actions runs `npm run build` and deploys `dist/` folder
 - **Base Path**: Configured in `vite.config.ts` as `base: '/find-the-flag/'`
 - **Manual Deploy**: Can be triggered from GitHub Actions tab in repository
+
+## Version Management
+
+The app includes automatic update detection to ensure users always have the latest version.
+
+### Version Updates
+
+When incrementing the version (with each PR), update these **3 locations**:
+
+1. **`package.json`**: Update the `version` field
+   ```json
+   {
+     "version": "0.4.0"
+   }
+   ```
+
+2. **`src/components/HomePage.tsx`**: Update the `APP_VERSION` constant
+   ```typescript
+   const APP_VERSION = '0.4.0';
+   ```
+
+3. **`public/sw.js`**: Increment the cache version numbers
+   ```javascript
+   const CACHE_NAME = 'find-the-flag-v2';
+   const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
+   ```
+   When updating from v0.4.0 to v0.5.0, change `v2` to `v3`
+
+### Version Increment Guidelines
+
+- **Patch** (0.4.x): Bug fixes, minor UI tweaks, translation updates
+- **Minor** (0.x.0): New features, settings additions, game mode enhancements
+- **Major** (x.0.0): Breaking changes, complete redesigns, major feature overhauls
+
+### Auto-Update System
+
+- Service worker checks for updates every 60 seconds
+- When new version detected, notification banner appears (bilingual)
+- User clicks "Update Now" / "Mettre à jour" to reload with new version
+- Old cache is automatically cleared on activation
 
 ## Best Practices Summary
 

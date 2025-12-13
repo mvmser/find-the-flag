@@ -15,8 +15,9 @@ A mobile-first, fully static flag guessing web game available in English and Fre
 - **🌐 Bilingual**: Full support for English and French with instant language switching
 - **📱 Mobile-First Design**: Optimized for touch interactions and fits on one screen without scrolling
 - **📊 Score Tracking**: Keep track of correct answers with persistent total score saved locally
-- **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options, toggle timer, and select game mode
-- **🎮 Game Modes**: Multiple choice or free-text input for different difficulty levels
+- **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options, toggle timer, select game mode, and set question count
+- **🎮 Game Modes**: Multiple choice or free-text input for different skill levels
+- **🎚️ Difficulty Levels**: Easy, Medium, or Hard modes to match your expertise
 - **⏱️ Timer Challenge**: Optional 20-second countdown with visual progress bar
 - **🎯 Smart Question Generation**: Avoids repeating the same country consecutively
 - **💾 localStorage Persistence**: Total score and settings saved across sessions
@@ -212,7 +213,7 @@ find-the-flag/
 ## 🎯 How to Play
 
 1. **Start**: Click "Start Game" on the home page
-2. **Customize**: Visit Settings to adjust difficulty (4/6/8 options) and toggle the timer
+2. **Customize**: Visit Settings to adjust options count (4/6/8), difficulty level (Easy/Medium/Hard), game mode, timer, and question count
 3. **Identify**: Look at the flag and choose the correct country from multiple options
 4. **Beat the Clock**: Answer within 20 seconds if timer is enabled
 5. **Track Progress**: Your total score persists across sessions
@@ -238,7 +239,9 @@ Future enhancements planned for this game:
 - [x] **Persistent Score Tracking**: Total score saved with localStorage ✅
 - [x] **PWA Support**: Offline capability and installable app with flag image caching ✅
 - [x] **Free-Text Input Mode**: Type the country name for expert mode ✅
-- [ ] **Difficulty Levels**: Easy (common flags), Medium, Hard (similar flags)
+- [x] **Difficulty Levels**: Easy, Medium, Hard modes ✅
+- [x] **Configurable Question Count**: Choose how many questions per game ✅
+- [x] **Score Sharing**: Share your achievements with friends ✅
 - [ ] **Regional Challenges**: Focus on specific continents (Africa, Asia, Europe, etc.)
 - [ ] **Hint System**: Get clues about population, capital, or continent
 - [ ] **Achievements**: Unlock badges for milestones (10 correct, 50 correct, etc.)
