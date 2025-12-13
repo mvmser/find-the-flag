@@ -39,6 +39,7 @@ function App() {
   const handleGoHome = () => {
     // Clear URL parameters when going home
     window.history.pushState({}, '', window.location.pathname);
+    setSharedScore(null);
     setCurrentPage('home');
   };
 
