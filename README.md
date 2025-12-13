@@ -13,9 +13,13 @@ A mobile-first, fully static flag guessing web game available in English and Fre
 ### Features
 
 - **🌐 Bilingual**: Full support for English and French with instant language switching
-- **📱 Mobile-First Design**: Optimized for touch interactions and responsive across all devices
-- **📊 Score Tracking**: Keep track of correct answers across multiple rounds
+- **📱 Mobile-First Design**: Optimized for touch interactions and fits on one screen without scrolling
+- **📊 Score Tracking**: Keep track of correct answers with persistent total score saved locally
+- **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options and toggle timer
+- **⏱️ Timer Challenge**: Optional 20-second countdown with visual progress bar
 - **🎯 Smart Question Generation**: Avoids repeating the same country consecutively
+- **💾 localStorage Persistence**: Total score and settings saved across sessions
+- **📲 PWA Support**: Install as an app on iPhone/Android with offline capability
 - **♿ Accessible**: Proper ARIA labels, focus states, and keyboard navigation
 - **🌙 Dark Mode**: Automatic dark mode support based on system preferences
 - **🚀 Zero Backend**: Fully static site with no server required
@@ -128,6 +132,8 @@ find-the-flag/
 │   │   ├── FlagImage.tsx   # Flag display with error handling
 │   │   ├── GamePage.tsx    # Main game interface
 │   │   ├── HomePage.tsx    # Landing page
+│   │   ├── SettingsPage.tsx # Settings and preferences
+│   │   ├── Timer.tsx       # Countdown timer component
 │   │   └── LanguageToggle.tsx
 │   ├── contexts/           # React context providers
 │   │   ├── LanguageContext.tsx
@@ -145,9 +151,14 @@ find-the-flag/
 │   │   └── App.css         # Component styles
 │   ├── types/
 │   │   └── index.ts        # TypeScript type definitions
+│   ├── utils/
+│   │   └── storage.ts      # localStorage utilities
 │   ├── App.tsx             # Root component with routing
 │   └── main.tsx            # Application entry point
 ├── public/                 # Static assets
+│   ├── icon.svg            # App icon
+│   ├── manifest.json       # PWA manifest
+│   └── sw.js               # Service worker
 ├── index.html             # HTML entry point
 ├── package.json           # Dependencies and scripts
 ├── tsconfig.json          # TypeScript configuration
@@ -157,10 +168,14 @@ find-the-flag/
 ## 🎯 How to Play
 
 1. **Start**: Click "Start Game" on the home page
-2. **Identify**: Look at the flag and choose the correct country from 4 options
-3. **Feedback**: Get instant feedback on your answer with the correct answer shown
-4. **Continue**: Click "Next" to get a new flag or "Restart" to reset your score
-5. **Switch Language**: Toggle between EN/FR at any time
+2. **Customize**: Visit Settings to adjust difficulty (4/6/8 options) and toggle the timer
+3. **Identify**: Look at the flag and choose the correct country from multiple options
+4. **Beat the Clock**: Answer within 20 seconds if timer is enabled
+5. **Track Progress**: Your total score persists across sessions
+6. **Feedback**: Get instant feedback on your answer with the correct answer shown
+7. **Continue**: Click "Next" to get a new flag or "Restart" to reset your round score
+8. **Switch Language**: Toggle between EN/FR at any time
+9. **Install**: Add to your home screen for a native app experience
 
 ## 🖼️ Flag Images Attribution
 
@@ -174,13 +189,14 @@ All flag images are sourced from **Wikimedia Commons** and are in the public dom
 
 Future enhancements planned for this game:
 
-- [ ] **8 Answer Options**: Increase difficulty with more choices
+- [x] **Variable Answer Options**: Choose between 4, 6, or 8 options ✅
+- [x] **Timer Challenge**: Race against the clock with configurable timer ✅
+- [x] **Persistent Score Tracking**: Total score saved with localStorage ✅
+- [x] **PWA Support**: Offline capability and installable app ✅
 - [ ] **Free-Text Input Mode**: Type the country name for expert mode
-- [ ] **Timer Challenge**: Race against the clock for bonus points
 - [ ] **Difficulty Levels**: Easy (common flags), Medium, Hard (similar flags)
 - [ ] **Regional Challenges**: Focus on specific continents (Africa, Asia, Europe, etc.)
 - [ ] **Hint System**: Get clues about population, capital, or continent
-- [ ] **Leaderboard**: Track high scores using localStorage
 - [ ] **Achievements**: Unlock badges for milestones (10 correct, 50 correct, etc.)
 - [ ] **Sound Effects**: Audio feedback for correct/incorrect answers
 - [ ] **PWA Support**: Offline capability and installable app
