@@ -16,6 +16,8 @@ export const DEFAULT_SETTINGS: GameSettings = {
   timerEnabled: true,
   timerDuration: 20,
   gameMode: 'multiple-choice',
+  questionCount: 20,
+  difficulty: 'easy',
 };
 
 // Sanitize username to remove potentially problematic characters
@@ -33,12 +35,23 @@ export function sanitizeUsername(username: string): string {
 
 // Score sharing encoding/decoding
 // Simple obfuscation to make it harder for users to manually craft URLs
-export function encodeScoreData(username: string, score: number): string {
-  const data = JSON.stringify({ u: username, s: score, t: Date.now() });
+export function encodeScoreData(username: string, score: number, total?: number, timeInSeconds?: number): string {
+  const data = JSON.stringify({ 
+    u: username, 
+    s: score, 
+    t: Date.now(),
+    total: total ?? score,
+    time: timeInSeconds ?? 0
+  });
   return btoa(data); // Base64 encode
 }
 
-export function decodeScoreData(encoded: string): { username: string; score: number } | null {
+export function decodeScoreData(encoded: string): { 
+  username: string; 
+  score: number; 
+  total?: number;
+  timeInSeconds?: number;
+} | null {
   try {
     const decoded = atob(encoded); // Base64 decode
     const data = JSON.parse(decoded);
@@ -56,7 +69,12 @@ export function decodeScoreData(encoded: string): { username: string; score: num
     // Sanitize username - removes HTML tags and special characters
     const username = sanitizeUsername(data.u);
     
-    return { username, score: data.s };
+    return { 
+      username, 
+      score: data.s,
+      total: typeof data.total === 'number' ? data.total : data.s,
+      timeInSeconds: typeof data.time === 'number' ? data.time : undefined
+    };
   } catch {
     return null;
   }
@@ -118,6 +136,17 @@ export function loadSettings(): GameSettings {
       // Validate gameMode
       if (parsed.gameMode === 'multiple-choice' || parsed.gameMode === 'free-text') {
         validatedSettings.gameMode = parsed.gameMode;
+      }
+      
+      // Validate questionCount (10, 20, 50, 100)
+      if (typeof parsed.questionCount === 'number' && 
+          [10, 20, 50, 100].includes(parsed.questionCount)) {
+        validatedSettings.questionCount = parsed.questionCount;
+      }
+      
+      // Validate difficulty
+      if (parsed.difficulty === 'easy' || parsed.difficulty === 'medium' || parsed.difficulty === 'hard') {
+        validatedSettings.difficulty = parsed.difficulty;
       }
       
       // Return only validated properties, ignoring any obsolete ones from parsed

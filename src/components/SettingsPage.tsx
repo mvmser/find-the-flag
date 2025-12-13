@@ -41,6 +41,27 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
     onSettingsChange(newSettings);
   };
 
+  const handleQuestionCountChange = (count: number) => {
+    const newSettings = { ...settings, questionCount: count };
+    setSettings(newSettings);
+    saveSettings(newSettings);
+    onSettingsChange(newSettings);
+  };
+
+  const handleDifficultyChange = (difficulty: 'easy' | 'medium' | 'hard') => {
+    const newSettings = { ...settings, difficulty };
+    setSettings(newSettings);
+    saveSettings(newSettings);
+    onSettingsChange(newSettings);
+  };
+
+  const handleTimerDurationChange = (duration: number) => {
+    const newSettings = { ...settings, timerDuration: duration };
+    setSettings(newSettings);
+    saveSettings(newSettings);
+    onSettingsChange(newSettings);
+  };
+
   const handleResetScoreClick = () => {
     setShowConfirmDialog(true);
   };
@@ -130,6 +151,45 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
         )}
 
         <div className="settings-section">
+          <h2 className="settings-section-title">{t('settings.questionCount', language)}</h2>
+          <div className="option-count-buttons">
+            {[10, 20, 50, 100].map((count) => (
+              <button
+                key={count}
+                className={`btn ${settings.questionCount === count ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => handleQuestionCountChange(count)}
+              >
+                {count} {t('settings.questions', language)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h2 className="settings-section-title">{t('settings.difficulty', language)}</h2>
+          <div className="option-count-buttons">
+            <button
+              className={`btn ${settings.difficulty === 'easy' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => handleDifficultyChange('easy')}
+            >
+              {t('settings.easy', language)}
+            </button>
+            <button
+              className={`btn ${settings.difficulty === 'medium' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => handleDifficultyChange('medium')}
+            >
+              {t('settings.medium', language)}
+            </button>
+            <button
+              className={`btn ${settings.difficulty === 'hard' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => handleDifficultyChange('hard')}
+            >
+              {t('settings.hard', language)}
+            </button>
+          </div>
+        </div>
+
+        <div className="settings-section">
           <h2 className="settings-section-title">{t('settings.timer', language)}</h2>
           <button
             className={`btn ${settings.timerEnabled ? 'btn-primary' : 'btn-secondary'}`}
@@ -138,9 +198,22 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
             {settings.timerEnabled ? t('settings.enabled', language) : t('settings.disabled', language)}
           </button>
           {settings.timerEnabled && (
-            <p className="settings-info">
-              {t('settings.timerDuration', language)}: {settings.timerDuration} {t('settings.seconds', language)}
-            </p>
+            <>
+              <p className="settings-info">
+                {t('settings.selectTimerDuration', language)}
+              </p>
+              <div className="option-count-buttons">
+                {[5, 10, 15, 20, 30, 60].map((duration) => (
+                  <button
+                    key={duration}
+                    className={`btn ${settings.timerDuration === duration ? 'btn-primary' : 'btn-secondary'}`}
+                    onClick={() => handleTimerDurationChange(duration)}
+                  >
+                    {duration}s
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>

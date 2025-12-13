@@ -24,6 +24,11 @@ export const en = {
     submit: 'Submit',
     shareScore: 'Share Score',
     linkCopied: 'Link copied to clipboard!',
+    skipQuestion: 'Skip Question',
+    progress: 'Question {current} of {total}',
+    gameComplete: 'Game Complete!',
+    yourScore: 'Your score:',
+    time: 'Time',
   },
   settings: {
     title: 'Settings',
@@ -44,6 +49,13 @@ export const en = {
     cancel: 'Cancel',
     pseudonym: 'Pseudonym',
     enterPseudonym: 'Enter your pseudonym...',
+    questionCount: 'Number of Questions',
+    questions: 'questions',
+    difficulty: 'Difficulty',
+    easy: 'Easy',
+    medium: 'Medium',
+    hard: 'Hard',
+    selectTimerDuration: 'Select Timer Duration',
   },
   flag: {
     alt: 'Flag of',
@@ -54,6 +66,9 @@ export const en = {
     achieved: 'achieved a score of',
     playNow: 'Play Now',
     congrats: 'Congratulations!',
+    lookAtMyScore: 'Look at my score!',
+    hasCorrectAnswers: 'has made {score} correct answers out of {total} questions',
+    inTime: 'in {time}',
   },
 };
 

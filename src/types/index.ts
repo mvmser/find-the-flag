@@ -13,6 +13,7 @@ export interface GameState {
   score: number;
   total: number;
   previousCorrectCode?: string;
+  startTime?: number;
 }
 
 export type GameMode = 'multiple-choice' | 'free-text';
@@ -22,6 +23,8 @@ export interface GameSettings {
   timerEnabled: boolean;
   timerDuration: number;
   gameMode: GameMode;
+  questionCount: number;
+  difficulty: 'easy' | 'medium' | 'hard';
 }
 
 export type Language = 'en' | 'fr';

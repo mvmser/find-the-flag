@@ -63,6 +63,9 @@
 .home-page {
   justify-content: space-between;
   text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .home-content {
@@ -72,6 +75,7 @@
   gap: var(--spacing-xl);
   flex: 1;
   justify-content: center;
+  padding: var(--spacing-lg) 0;
 }
 
 .home-title {
@@ -93,7 +97,7 @@
   padding: var(--spacing-md);
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
-  margin-top: var(--spacing-lg);
+  flex-shrink: 0;
 }
 
 /* Buttons */
@@ -161,15 +165,17 @@
 /* Game Page */
 .game-page {
   min-height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .game-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
   gap: var(--spacing-md);
   flex-shrink: 0;
 }
@@ -177,10 +183,12 @@
 .game-content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   align-items: center;
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
+  padding-bottom: var(--spacing-md);
 }
 
 .score-display {
@@ -198,7 +206,7 @@
 /* Flag Display */
 .flag-container {
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
   aspect-ratio: 4 / 3;
   background-color: var(--color-surface);
   border-radius: var(--radius-xl);
@@ -208,6 +216,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .flag-image {
@@ -221,13 +230,22 @@
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
 }
 
 .flag-placeholder svg {
   width: 100%;
-  height: 100%;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.skip-question-btn {
+  flex-shrink: 0;
+  min-height: 48px;
 }
 
 /* Question */
@@ -382,6 +400,86 @@
   flex: 1;
 }
 
+.next-btn-with-countdown {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.countdown-separator {
+  opacity: 0.5;
+}
+
+.countdown-value {
+  font-weight: 700;
+  min-width: 1.2em;
+  text-align: center;
+}
+
+.countdown-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.4);
+  transition: width 1s linear;
+}
+
+/* Game Complete Screen */
+.game-complete-content {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.game-complete-title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-success);
+  margin: 0;
+}
+
+.game-complete-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-2xl);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
+  border-radius: var(--radius-xl);
+  border: 3px solid var(--color-success);
+  min-width: 300px;
+  box-shadow: var(--shadow-lg);
+}
+
+.game-complete-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.game-complete-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.game-complete-value {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.game-complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+  max-width: 400px;
+}
+
 /* Game Stats */
 .game-stats {
   display: flex;
@@ -389,6 +487,17 @@
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
+}
+
+.progress-indicator {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  text-align: center;
 }
 
 .total-score-badge {
@@ -607,6 +716,40 @@
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
+}
+
+.score-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-2xl);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
+  border-radius: var(--radius-xl);
+  border: 3px solid var(--color-primary);
+  min-width: 320px;
+  box-shadow: var(--shadow-lg);
+}
+
+.score-card-username {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.score-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  text-align: center;
+}
+
+.score-card-stat {
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 .score-achievement {
