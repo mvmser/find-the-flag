@@ -9,16 +9,6 @@ const translations: Record<Language, TranslationKeys> = {
   fr,
 };
 
-let currentLanguage: Language = 'en';
-
-export function setLanguage(lang: Language): void {
-  currentLanguage = lang;
-}
-
-export function getLanguage(): Language {
-  return currentLanguage;
-}
-
 type NestedKeyOf<T> = T extends object
   ? {
       [K in keyof T]: K extends string
@@ -31,9 +21,9 @@ type NestedKeyOf<T> = T extends object
 
 type TranslationKey = NestedKeyOf<TranslationKeys>;
 
-export function t(key: TranslationKey): string {
+export function t(key: TranslationKey, language: Language): string {
   const keys = key.split('.');
-  let value: unknown = translations[currentLanguage];
+  let value: unknown = translations[language];
 
   for (const k of keys) {
     if (typeof value === 'object' && value !== null && k in value) {

@@ -78,7 +78,7 @@ npm run lint
 
 This project is designed to be deployed to GitHub Pages with zero configuration:
 
-### Basic Deployment Steps
+### Deployment Steps
 
 1. **Build the project**:
    ```bash
@@ -86,33 +86,10 @@ This project is designed to be deployed to GitHub Pages with zero configuration:
    ```
    This creates an optimized production build in the `dist/` folder.
 
-2. **Deploy to GitHub Pages**:
-   - The `dist/` folder contains all static files needed
-   - You can use GitHub Actions, `gh-pages` npm package, or manual deployment
-   - Configure your repository settings to serve from the appropriate branch
-
-3. **GitHub Actions Example** (optional):
-   Create `.github/workflows/deploy.yml`:
-   ```yaml
-   name: Deploy to GitHub Pages
-   on:
-     push:
-       branches: [ main ]
-   jobs:
-     build-and-deploy:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v3
-         - uses: actions/setup-node@v3
-           with:
-             node-version: '18'
-         - run: npm install
-         - run: npm run build
-         - uses: peaceiris/actions-gh-pages@v3
-           with:
-             github_token: ${{ secrets.GITHUB_TOKEN }}
-             publish_dir: ./dist
-   ```
+2. **Deploy the dist folder**:
+   - The `dist/` folder contains all static files needed for deployment
+   - You can deploy this folder to any static hosting service
+   - For GitHub Pages, you can manually upload the contents or use any deployment method you prefer
 
 ### Base Path Configuration
 

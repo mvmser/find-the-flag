@@ -84,14 +84,14 @@ export function GamePage({ onGoHome }: GamePageProps) {
     <div className="page game-page">
       <div className="game-header">
         <button className="btn-text" onClick={onGoHome}>
-          ← {t('home.title')}
+          ← {t('home.title', language)}
         </button>
         <LanguageToggle />
       </div>
 
       <div className="game-content">
         <div className="score-display">
-          {t('game.score')}: {gameState.score} / {gameState.total}
+          {t('game.score', language)}: {gameState.score} / {gameState.total}
         </div>
 
         <FlagImage
@@ -99,7 +99,7 @@ export function GamePage({ onGoHome }: GamePageProps) {
           countryName={getCountryName(currentQuestion.correct)}
         />
 
-        <h2 className="game-question">{t('game.question')}</h2>
+        <h2 className="game-question">{t('game.question', language)}</h2>
 
         <div className="options-grid">
           {currentQuestion.options.map((option) => (
@@ -117,11 +117,11 @@ export function GamePage({ onGoHome }: GamePageProps) {
         {answerState !== 'unanswered' && (
           <div className={`feedback feedback-${answerState}`}>
             <p className="feedback-message">
-              {answerState === 'correct' ? t('game.correct') : t('game.incorrect')}
+              {answerState === 'correct' ? t('game.correct', language) : t('game.incorrect', language)}
             </p>
             {answerState === 'incorrect' && (
               <p className="feedback-answer">
-                {t('game.correctAnswer')} <strong>{getCountryName(currentQuestion.correct)}</strong>
+                {t('game.correctAnswer', language)} <strong>{getCountryName(currentQuestion.correct)}</strong>
               </p>
             )}
           </div>
@@ -130,10 +130,10 @@ export function GamePage({ onGoHome }: GamePageProps) {
         {answerState !== 'unanswered' && (
           <div className="game-actions">
             <button className="btn btn-primary" onClick={handleNext}>
-              {t('game.next')}
+              {t('game.next', language)}
             </button>
             <button className="btn btn-secondary" onClick={handleRestart}>
-              {t('game.restart')}
+              {t('game.restart', language)}
             </button>
           </div>
         )}

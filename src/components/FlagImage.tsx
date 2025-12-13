@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { t } from '../i18n';
+import { useLanguage } from '../contexts/useLanguage';
 
 interface FlagImageProps {
   flagUrl: string;
@@ -9,6 +10,7 @@ interface FlagImageProps {
 }
 
 export function FlagImage({ flagUrl, countryName }: FlagImageProps) {
+  const { language } = useLanguage();
   const [hasError, setHasError] = useState(false);
 
   if (hasError) {
@@ -26,7 +28,7 @@ export function FlagImage({ flagUrl, countryName }: FlagImageProps) {
               fontSize="16"
               fontFamily="system-ui, sans-serif"
             >
-              {t('flag.unavailable')}
+              {t('flag.unavailable', language)}
             </text>
           </svg>
         </div>
@@ -38,7 +40,7 @@ export function FlagImage({ flagUrl, countryName }: FlagImageProps) {
     <div className="flag-container">
       <img
         src={flagUrl}
-        alt={`${t('flag.alt')} ${countryName}`}
+        alt={`${t('flag.alt', language)} ${countryName}`}
         className="flag-image"
         onError={() => setHasError(true)}
         loading="lazy"
