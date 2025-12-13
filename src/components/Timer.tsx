@@ -28,6 +28,7 @@ export function Timer({ duration, onTimeUp, isActive }: TimerProps) {
   const [timeLeft, setTimeLeft] = useState(duration);
   const isActiveRef = useRef(isActive);
   const onTimeUpRef = useRef(onTimeUp);
+  const isMountedRef = useRef(true);
 
   // Keep refs up to date
   useEffect(() => {
@@ -45,13 +46,13 @@ export function Timer({ duration, onTimeUp, isActive }: TimerProps) {
     }
 
     setTimeLeft(duration);
+    isMountedRef.current = true;
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
-          // Use ref to avoid dependency on onTimeUp
-          if (isActiveRef.current) {
+          // Check if timer is still mounted before calling onTimeUp
+          if (isMountedRef.current && isActiveRef.current) {
             onTimeUpRef.current();
           }
           return 0;
@@ -60,7 +61,10 @@ export function Timer({ duration, onTimeUp, isActive }: TimerProps) {
       });
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      isMountedRef.current = false;
+      clearInterval(interval);
+    };
   }, [duration, isActive]);
 
   if (!isActive) return null;
