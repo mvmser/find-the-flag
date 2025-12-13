@@ -13,7 +13,12 @@ type Page = 'home' | 'game' | 'settings' | 'score';
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [settings, setSettings] = useState<GameSettings>(loadSettings());
-  const [sharedScore, setSharedScore] = useState<{ username: string; score: number } | null>(null);
+  const [sharedScore, setSharedScore] = useState<{ 
+    username: string; 
+    score: number;
+    total?: number;
+    timeInSeconds?: number;
+  } | null>(null);
 
   useEffect(() => {
     // Check URL parameters for shared score
@@ -23,7 +28,12 @@ function App() {
     if (data) {
       const decoded = decodeScoreData(data);
       if (decoded) {
-        setSharedScore({ username: decoded.username, score: decoded.score });
+        setSharedScore({ 
+          username: decoded.username, 
+          score: decoded.score,
+          total: decoded.total,
+          timeInSeconds: decoded.timeInSeconds
+        });
         setCurrentPage('score');
       }
     }
@@ -57,6 +67,8 @@ function App() {
           <ScorePage
             username={sharedScore.username}
             score={sharedScore.score}
+            total={sharedScore.total}
+            timeInSeconds={sharedScore.timeInSeconds}
             onPlayNow={handleGoHome}
           />
         ) : (

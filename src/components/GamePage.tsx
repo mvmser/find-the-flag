@@ -1,6 +1,6 @@
 // Game page component
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Country } from '../data/countries';
 import { countries } from '../data/countries';
 import { GameState, GameSettings } from '../types';
@@ -26,6 +26,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     total: 0,
+    startTime: Date.now(),
   });
   const [currentQuestion, setCurrentQuestion] = useState(() =>
     buildQuestion(countries, undefined, settings.optionCount)
@@ -34,6 +35,8 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
   const [textInput, setTextInput] = useState('');
   const [showCopyNotification, setShowCopyNotification] = useState(false);
+  const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState<number | null>(null);
+  const autoAdvanceTimerRef = useRef<number | null>(null);
 
   const normalizeText = (text: string): string => {
     return text
@@ -70,6 +73,9 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
       setTotalScore(newTotal);
       saveTotalScore(newTotal);
     }
+    
+    // Start auto-advance countdown
+    startAutoAdvance();
   };
 
   const handleOptionClick = (option: Country) => {
@@ -90,6 +96,9 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
       setTotalScore(newTotal);
       saveTotalScore(newTotal);
     }
+    
+    // Start auto-advance countdown
+    startAutoAdvance();
   };
 
   const handleTimeUp = () => {
@@ -102,9 +111,51 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
       ...prev,
       total: prev.total + 1,
     }));
+    
+    // Start auto-advance countdown
+    startAutoAdvance();
   };
 
+  const startAutoAdvance = () => {
+    setAutoAdvanceCountdown(5);
+  };
+
+  const cancelAutoAdvance = () => {
+    if (autoAdvanceTimerRef.current) {
+      clearInterval(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
+    setAutoAdvanceCountdown(null);
+  };
+
+  // Auto-advance countdown effect
+  useEffect(() => {
+    if (autoAdvanceCountdown === null) return;
+
+    if (autoAdvanceCountdown <= 0) {
+      cancelAutoAdvance();
+      // Inline next logic to avoid dependency
+      const newQuestion = buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount);
+      setCurrentQuestion(newQuestion);
+      setSelectedOption(null);
+      setTextInput('');
+      setAnswerState('unanswered');
+      return;
+    }
+
+    autoAdvanceTimerRef.current = window.setInterval(() => {
+      setAutoAdvanceCountdown((prev) => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => {
+      if (autoAdvanceTimerRef.current) {
+        clearInterval(autoAdvanceTimerRef.current);
+      }
+    };
+  }, [autoAdvanceCountdown, gameState.previousCorrectCode, settings.optionCount]);
+
   const handleNext = () => {
+    cancelAutoAdvance();
     const newQuestion = buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
@@ -112,8 +163,18 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     setAnswerState('unanswered');
   };
 
+  const handleSkip = () => {
+    // Skip counts as incorrect but shows next question immediately
+    setGameState((prev) => ({
+      ...prev,
+      total: prev.total + 1,
+      previousCorrectCode: currentQuestion.correct.code,
+    }));
+    handleNext();
+  };
+
   const handleRestart = () => {
-    setGameState({ score: 0, total: 0 });
+    setGameState({ score: 0, total: 0, startTime: Date.now() });
     const newQuestion = buildQuestion(countries, undefined, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
@@ -124,14 +185,15 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const handleShare = () => {
     const pseudonym = loadPseudonym() || 'Anonymous';
     const baseUrl = window.location.origin + window.location.pathname;
-    const encodedData = encodeScoreData(pseudonym, totalScore);
+    const elapsedTime = gameState.startTime ? Math.floor((Date.now() - gameState.startTime) / 1000) : 0;
+    const encodedData = encodeScoreData(pseudonym, gameState.score, gameState.total, elapsedTime);
     const shareUrl = `${baseUrl}?data=${encodeURIComponent(encodedData)}`;
     
     // Try to use Web Share API if available
     if (navigator.share) {
       navigator.share({
         title: 'Find the Flag - My Score',
-        text: `${pseudonym} achieved a score of ${totalScore} in Find the Flag!`,
+        text: `${pseudonym} achieved ${gameState.score}/${gameState.total} in Find the Flag!`,
         url: shareUrl,
       }).catch(() => {
         // User cancelled or error occurred - silently ignore
@@ -180,6 +242,69 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     return [baseClass, modifierClass].filter(Boolean).join(' ');
   };
 
+  // Check if game is complete
+  const isGameComplete = gameState.total >= settings.questionCount;
+
+  // Show game complete screen
+  if (isGameComplete && answerState !== 'unanswered') {
+    const elapsedTime = gameState.startTime ? Math.floor((Date.now() - gameState.startTime) / 1000) : 0;
+    const formatTime = (seconds: number) => {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      if (mins > 0) {
+        return `${mins}m ${secs}s`;
+      }
+      return `${secs}s`;
+    };
+
+    return (
+      <div className="page game-page">
+        <div className="game-header">
+          <button className="btn-text" onClick={onGoHome}>
+            ← {t('home.title', language)}
+          </button>
+          <LanguageToggle />
+        </div>
+
+        <div className="game-content game-complete-content">
+          <h1 className="game-complete-title">{t('game.gameComplete', language)}</h1>
+          
+          <div className="game-complete-card">
+            <div className="game-complete-stat">
+              <div className="game-complete-label">{t('game.yourScore', language)}</div>
+              <div className="game-complete-value">{gameState.score} / {gameState.total}</div>
+            </div>
+            
+            {elapsedTime > 0 && (
+              <div className="game-complete-stat">
+                <div className="game-complete-label">{t('game.timeLeft', language)}:</div>
+                <div className="game-complete-value">{formatTime(elapsedTime)}</div>
+              </div>
+            )}
+          </div>
+
+          <div className="game-complete-actions">
+            <button className="btn btn-primary btn-large" onClick={handleRestart}>
+              {t('game.restart', language)}
+            </button>
+            <button className="btn btn-secondary" onClick={handleShare}>
+              📤 {t('game.shareScore', language)}
+            </button>
+            <button className="btn btn-secondary" onClick={onGoHome}>
+              {t('home.title', language)}
+            </button>
+          </div>
+        </div>
+
+        {showCopyNotification && (
+          <div className="copy-notification">
+            {t('game.linkCopied', language)}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="page game-page">
       <div className="game-header">
@@ -191,6 +316,11 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
       <div className="game-content">
         <div className="game-stats">
+          <div className="progress-indicator">
+            {t('game.progress', language)
+              .replace('{current}', (gameState.total + 1).toString())
+              .replace('{total}', settings.questionCount.toString())}
+          </div>
           <div className="score-display">
             {t('game.score', language)}: {gameState.score} / {gameState.total}
           </div>
@@ -217,6 +347,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
         <FlagImage
           flagUrl={currentQuestion.correct.flagUrl}
           countryName={getCountryName(currentQuestion.correct)}
+          onSkip={answerState === 'unanswered' ? handleSkip : undefined}
         />
 
         <h2 className="game-question">{t('game.question', language)}</h2>
@@ -277,8 +408,18 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
         {answerState !== 'unanswered' && (
           <div className="game-actions">
-            <button className="btn btn-primary" onClick={handleNext}>
-              {t('game.next', language)}
+            <button className="btn btn-primary next-btn-with-countdown" onClick={handleNext}>
+              <span>{t('game.next', language)}</span>
+              {autoAdvanceCountdown !== null && autoAdvanceCountdown > 0 && (
+                <>
+                  <span className="countdown-separator">•</span>
+                  <span className="countdown-value">{autoAdvanceCountdown}</span>
+                  <div 
+                    className="countdown-progress" 
+                    style={{ width: `${(autoAdvanceCountdown / 5) * 100}%` }}
+                  />
+                </>
+              )}
             </button>
             <button className="btn btn-secondary" onClick={handleRestart}>
               {t('game.restart', language)}

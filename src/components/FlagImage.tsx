@@ -7,9 +7,10 @@ import { useLanguage } from '../contexts/useLanguage';
 interface FlagImageProps {
   flagUrl: string;
   countryName: string;
+  onSkip?: () => void;
 }
 
-export function FlagImage({ flagUrl, countryName }: FlagImageProps) {
+export function FlagImage({ flagUrl, countryName, onSkip }: FlagImageProps) {
   const { language } = useLanguage();
   const [hasError, setHasError] = useState(false);
 
@@ -21,7 +22,7 @@ export function FlagImage({ flagUrl, countryName }: FlagImageProps) {
             <rect width="320" height="240" fill="#e0e0e0" />
             <text
               x="160"
-              y="120"
+              y="100"
               textAnchor="middle"
               dominantBaseline="middle"
               fill="#666"
@@ -31,6 +32,14 @@ export function FlagImage({ flagUrl, countryName }: FlagImageProps) {
               {t('flag.unavailable', language)}
             </text>
           </svg>
+          {onSkip && (
+            <button 
+              className="btn btn-secondary skip-question-btn" 
+              onClick={onSkip}
+            >
+              {t('game.skipQuestion', language)}
+            </button>
+          )}
         </div>
       </div>
     );
