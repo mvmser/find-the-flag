@@ -25,7 +25,7 @@ function App() {
       const scoreValue = parseInt(score, 10);
       // Validate username and score
       const sanitizedUsername = username.trim().substring(0, PSEUDONYM_MAX_LENGTH);
-      if (!isNaN(scoreValue) && scoreValue >= 0 && sanitizedUsername) {
+      if (!isNaN(scoreValue) && scoreValue >= 0) {
         setSharedScore({ username: sanitizedUsername, score: scoreValue });
         setCurrentPage('score');
       }
