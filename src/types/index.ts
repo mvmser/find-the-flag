@@ -14,7 +14,6 @@ export interface GameState {
   total: number;
   previousCorrectCode?: string;
   startTime?: number;
-  questionCount?: number;
 }
 
 export type GameMode = 'multiple-choice' | 'free-text';
