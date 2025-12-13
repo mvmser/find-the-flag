@@ -94,11 +94,13 @@ function showUpdateNotification(worker: ServiceWorker) {
     worker.postMessage({ type: 'SKIP_WAITING' });
     // Reload the page when the new service worker takes control
     let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    const onControllerChange = () => {
       if (refreshing) return;
       refreshing = true;
+      navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
       window.location.reload();
-    });
+    };
+    navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
   });
 }
 
