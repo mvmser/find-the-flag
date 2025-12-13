@@ -18,6 +18,19 @@ export const DEFAULT_SETTINGS: GameSettings = {
   gameMode: 'multiple-choice',
 };
 
+// Sanitize username to remove potentially problematic characters
+// Allows alphanumeric, spaces, and basic punctuation only
+export function sanitizeUsername(username: string): string {
+  return username
+    .trim()
+    .substring(0, PSEUDONYM_MAX_LENGTH)
+    // Remove HTML tags and special characters, keep alphanumeric, spaces, and basic punctuation
+    .replace(/[<>'"&]/g, '')
+    // Replace multiple spaces with single space
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 // Score sharing encoding/decoding
 // Simple obfuscation to make it harder for users to manually craft URLs
 export function encodeScoreData(username: string, score: number): string {
@@ -40,8 +53,8 @@ export function decodeScoreData(encoded: string): { username: string; score: num
       return null;
     }
     
-    // Sanitize username
-    const username = data.u.trim().substring(0, PSEUDONYM_MAX_LENGTH);
+    // Sanitize username - removes HTML tags and special characters
+    const username = sanitizeUsername(data.u);
     
     return { username, score: data.s };
   } catch {
