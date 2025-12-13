@@ -152,27 +152,34 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   useEffect(() => {
     if (autoAdvanceCountdown === null) return;
 
-    if (autoAdvanceCountdown <= 0) {
-      cancelAutoAdvance();
-      // Inline next logic to avoid dependency
-      const newQuestion = buildNewQuestion(gameState.previousCorrectCode);
-      setCurrentQuestion(newQuestion);
-      setSelectedOption(null);
-      setTextInput('');
-      setAnswerState('unanswered');
-      return;
-    }
-
     autoAdvanceTimerRef.current = window.setInterval(() => {
-      setAutoAdvanceCountdown((prev) => (prev !== null ? prev - 1 : null));
+      setAutoAdvanceCountdown((prev) => {
+        if (prev === null) return null;
+        if (prev <= 1) {
+          // Time's up: clear interval and advance
+          if (autoAdvanceTimerRef.current) {
+            clearInterval(autoAdvanceTimerRef.current);
+            autoAdvanceTimerRef.current = null;
+          }
+          // Inline next logic to avoid dependency
+          const newQuestion = buildNewQuestion(gameState.previousCorrectCode);
+          setCurrentQuestion(newQuestion);
+          setSelectedOption(null);
+          setTextInput('');
+          setAnswerState('unanswered');
+          return null;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => {
       if (autoAdvanceTimerRef.current) {
         clearInterval(autoAdvanceTimerRef.current);
+        autoAdvanceTimerRef.current = null;
       }
     };
-  }, [autoAdvanceCountdown, gameState.previousCorrectCode, buildNewQuestion]);
+  }, [autoAdvanceCountdown, buildNewQuestion, gameState.previousCorrectCode]);
 
   const handleNext = () => {
     cancelAutoAdvance();
