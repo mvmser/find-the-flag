@@ -6,7 +6,7 @@ import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { LanguageToggle } from './LanguageToggle';
 import { ConfirmDialog } from './ConfirmDialog';
-import { loadSettings, saveSettings, loadTotalScore, resetTotalScore, loadPseudonym, savePseudonym } from '../utils/storage';
+import { loadSettings, saveSettings, loadTotalScore, resetTotalScore, loadPseudonym, savePseudonym, PSEUDONYM_MAX_LENGTH } from '../utils/storage';
 
 interface SettingsPageProps {
   onBack: () => void;
@@ -81,7 +81,7 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
             value={pseudonym}
             onChange={handlePseudonymChange}
             placeholder={t('settings.enterPseudonym', language)}
-            maxLength={20}
+            maxLength={PSEUDONYM_MAX_LENGTH}
           />
         </div>
 

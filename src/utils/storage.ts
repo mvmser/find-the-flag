@@ -8,6 +8,8 @@ const STORAGE_KEYS = {
   PSEUDONYM: 'findTheFlag_pseudonym',
 } as const;
 
+export const PSEUDONYM_MAX_LENGTH = 20;
+
 export const DEFAULT_SETTINGS: GameSettings = {
   optionCount: 4,
   timerEnabled: true,
@@ -102,7 +104,9 @@ export function loadPseudonym(): string {
 
 export function savePseudonym(pseudonym: string): void {
   try {
-    localStorage.setItem(STORAGE_KEYS.PSEUDONYM, pseudonym);
+    // Validate and sanitize pseudonym
+    const sanitized = pseudonym.trim().substring(0, PSEUDONYM_MAX_LENGTH);
+    localStorage.setItem(STORAGE_KEYS.PSEUDONYM, sanitized);
   } catch {
     // Silent fail if localStorage is not available
   }

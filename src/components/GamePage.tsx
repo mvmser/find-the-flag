@@ -122,14 +122,16 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
   const handleShare = () => {
     const pseudonym = loadPseudonym() || 'Anonymous';
+    // Validate and sanitize pseudonym for URL
+    const sanitizedPseudonym = pseudonym.trim().substring(0, 20);
     const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?username=${encodeURIComponent(pseudonym)}&score=${totalScore}`;
+    const shareUrl = `${baseUrl}?username=${encodeURIComponent(sanitizedPseudonym)}&score=${totalScore}`;
     
     // Try to use Web Share API if available
     if (navigator.share) {
       navigator.share({
         title: 'Find the Flag - My Score',
-        text: `${pseudonym} achieved a score of ${totalScore} in Find the Flag!`,
+        text: `${sanitizedPseudonym} achieved a score of ${totalScore} in Find the Flag!`,
         url: shareUrl,
       }).catch((error) => {
         // User cancelled or error occurred
