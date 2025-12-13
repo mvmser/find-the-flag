@@ -44,6 +44,20 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState<number | null>(null);
   const autoAdvanceTimerRef = useRef<number | null>(null);
 
+  // Cancel the auto-advance timer if set
+  const cancelAutoAdvance = useCallback(() => {
+    if (autoAdvanceTimerRef.current !== null) {
+      clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
+  }, []);
+
+  // Cleanup effect to cancel timer on unmount
+  useEffect(() => {
+    return () => {
+      cancelAutoAdvance();
+    };
+  }, [cancelAutoAdvance]);
   const normalizeText = (text: string): string => {
     return text
       .normalize('NFD') // Decompose combined characters
