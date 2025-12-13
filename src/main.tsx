@@ -36,7 +36,7 @@ if ('serviceWorker' in navigator) {
                 // New service worker available, notify user
                 showUpdateNotification(newWorker);
               }
-            });
+            }, { once: true });
           }
         });
       })
