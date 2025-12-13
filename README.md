@@ -2,139 +2,202 @@
 
 A mobile-first, fully static flag guessing web game available in English and French. Test your knowledge of world flags in this fun and educational game!
 
-## 📖 About the Game
+## 🎮 What is Find the Flag?
 
-Find the Flag is an interactive web game where players guess which country a flag belongs to. The game is designed with a mobile-first approach, ensuring a smooth experience on all devices, from smartphones to desktops.
+**Find the Flag** is an interactive web-based quiz game where players test their knowledge of world flags. Each round presents a flag image, and players must identify which country it belongs to from four multiple-choice options.
 
-### Game Features
+### Features
 
-- **Mobile-First Design**: Optimized for touch interactions and small screens
-- **Bilingual Support**: Play in English (EN) or French (FR)
-- **Score Tracking**: Keep track of your performance across rounds
-- **Lives System**: Limited attempts to keep the challenge engaging
-- **Progressive Difficulty**: Questions get harder as you advance
-- **Fully Static**: No backend required, runs entirely in the browser
+- **🌐 Bilingual**: Full support for English and French with instant language switching
+- **📱 Mobile-First Design**: Optimized for touch interactions and responsive across all devices
+- **📊 Score Tracking**: Keep track of correct answers across multiple rounds
+- **🎯 Smart Question Generation**: Avoids repeating the same country consecutively
+- **♿ Accessible**: Proper ARIA labels, focus states, and keyboard navigation
+- **🌙 Dark Mode**: Automatic dark mode support based on system preferences
+- **🚀 Zero Backend**: Fully static site with no server required
+- **🖼️ Graceful Fallbacks**: Image error handling with fallback placeholders
 
 ## 🛠️ Tech Stack
 
-This project is built with modern web technologies:
+This project uses modern web technologies with minimal dependencies:
 
-- **[Vite](https://vitejs.dev/)**: Next-generation frontend tooling for fast development
-- **[React](https://react.dev/)**: Component-based UI library
-- **[TypeScript](https://www.typescriptlang.org/)**: Type-safe JavaScript for better developer experience
-- **CSS3**: Modern styling with responsive design principles
+- **[Vite](https://vitejs.dev/)**: Lightning-fast development and optimized builds
+- **[React](https://react.dev/)**: Component-based UI library with TypeScript
+- **[TypeScript](https://www.typescriptlang.org/)**: Type-safe development with strict mode
+- **CSS3**: Modern styling with CSS variables, flexbox, and grid
+- **No UI Framework**: Clean, custom CSS for complete control and minimal bundle size
 
-### Project Structure
+### Key Technical Features
 
-```
-find-the-flag/
-├── public/              # Static assets
-├── src/
-│   ├── assets/          # Images, flags, icons
-│   ├── components/      # React components
-│   ├── locales/         # i18n translations (EN/FR)
-│   ├── styles/          # CSS files
-│   ├── types/           # TypeScript type definitions
-│   ├── utils/           # Utility functions
-│   ├── App.tsx          # Main app component
-│   └── main.tsx         # Application entry point
-├── index.html           # HTML entry point
-├── package.json         # Dependencies and scripts
-├── tsconfig.json        # TypeScript configuration
-└── vite.config.ts       # Vite configuration
-```
-
-## 🎯 Goals
-
-1. **Educational**: Help players learn world flags and geography
-2. **Accessible**: Easy to use for all age groups and skill levels
-3. **Performant**: Fast loading times and smooth interactions
-4. **Responsive**: Works seamlessly on mobile, tablet, and desktop
-5. **Deployable**: Easy deployment to GitHub Pages with zero backend costs
+- Pure TypeScript game logic with testable functions
+- Custom lightweight i18n system (no external library)
+- Context-based state management for language preferences
+- localStorage persistence for language selection
+- Flag images hotlinked from Wikimedia Commons (free, no downloads needed)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js 18 or higher
 - npm or yarn
 
-### Installation
+### Installation & Running Locally
 
 ```bash
 # Clone the repository
 git clone https://github.com/mvmser/find-the-flag.git
-
-# Navigate to the project directory
 cd find-the-flag
 
 # Install dependencies
 npm install
 
-# Start the development server
+# Start development server
 npm run dev
 ```
 
-### Development
+The game will be available at `http://localhost:5173`
+
+### Development Commands
 
 ```bash
-# Run development server
+# Run development server with hot reload
 npm run dev
 
 # Build for production
 npm run build
 
-# Preview production build
+# Preview production build locally
 npm run preview
 
-# Lint code
+# Run linter
 npm run lint
 ```
 
-## 🌐 Deployment
+## 🌐 Deployment to GitHub Pages
 
-This project is configured for GitHub Pages deployment. The build output will be in the `dist/` directory.
+This project is designed to be deployed to GitHub Pages with zero configuration:
 
-To deploy:
+### Deployment Steps
 
-```bash
-# Build the project
-npm run build
+1. **Build the project**:
+   ```bash
+   npm run build
+   ```
+   This creates an optimized production build in the `dist/` folder.
 
-# The dist/ folder can be deployed to GitHub Pages
+2. **Deploy the dist folder**:
+   - The `dist/` folder contains all static files needed for deployment
+   - You can deploy this folder to any static hosting service
+   - For GitHub Pages, you can manually upload the contents or use any deployment method you prefer
+
+### Base Path Configuration
+
+If deploying to a subdirectory (like `https://username.github.io/find-the-flag/`), update `vite.config.ts`:
+
+```typescript
+export default defineConfig({
+  base: '/find-the-flag/', // Match your repo name
+  // ...rest of config
+})
 ```
 
-## 🔮 Future Features
+## 📁 Project Structure
 
-The following features are planned for future releases:
+```
+find-the-flag/
+├── src/
+│   ├── components/          # React components
+│   │   ├── FlagImage.tsx   # Flag display with error handling
+│   │   ├── GamePage.tsx    # Main game interface
+│   │   ├── HomePage.tsx    # Landing page
+│   │   └── LanguageToggle.tsx
+│   ├── contexts/           # React context providers
+│   │   ├── LanguageContext.tsx
+│   │   └── useLanguage.ts
+│   ├── data/
+│   │   └── countries.ts    # 48 countries with flag URLs
+│   ├── i18n/               # Internationalization
+│   │   ├── en.ts           # English translations
+│   │   ├── fr.ts           # French translations
+│   │   └── index.ts        # i18n utilities
+│   ├── lib/
+│   │   └── game.ts         # Pure game logic functions
+│   ├── styles/
+│   │   ├── index.css       # Global styles & CSS variables
+│   │   └── App.css         # Component styles
+│   ├── types/
+│   │   └── index.ts        # TypeScript type definitions
+│   ├── App.tsx             # Root component with routing
+│   └── main.tsx            # Application entry point
+├── public/                 # Static assets
+├── index.html             # HTML entry point
+├── package.json           # Dependencies and scripts
+├── tsconfig.json          # TypeScript configuration
+└── vite.config.ts         # Vite configuration
+```
 
-- [ ] **Difficulty Levels**: Easy, Medium, Hard modes with different flag sets
-- [ ] **Timed Mode**: Race against the clock for bonus points
-- [ ] **Leaderboard**: Track high scores locally
-- [ ] **Hint System**: Get clues about the country (continent, population, capital)
-- [ ] **Regional Challenges**: Focus on specific continents or regions
-- [ ] **Dark Mode**: Toggle between light and dark themes
+## 🎯 How to Play
+
+1. **Start**: Click "Start Game" on the home page
+2. **Identify**: Look at the flag and choose the correct country from 4 options
+3. **Feedback**: Get instant feedback on your answer with the correct answer shown
+4. **Continue**: Click "Next" to get a new flag or "Restart" to reset your score
+5. **Switch Language**: Toggle between EN/FR at any time
+
+## 🖼️ Flag Images Attribution
+
+All flag images are sourced from **Wikimedia Commons** and are in the public domain or licensed under Creative Commons. Flags are hotlinked directly from Wikimedia's servers, requiring no local storage or downloads.
+
+- Flag images: [Wikimedia Commons](https://commons.wikimedia.org/)
+- Format: PNG files, 320px width for optimal performance
+- No attribution required for public domain flags, but we acknowledge Wikimedia's excellent resource
+
+## 🔮 Roadmap
+
+Future enhancements planned for this game:
+
+- [ ] **8 Answer Options**: Increase difficulty with more choices
+- [ ] **Free-Text Input Mode**: Type the country name for expert mode
+- [ ] **Timer Challenge**: Race against the clock for bonus points
+- [ ] **Difficulty Levels**: Easy (common flags), Medium, Hard (similar flags)
+- [ ] **Regional Challenges**: Focus on specific continents (Africa, Asia, Europe, etc.)
+- [ ] **Hint System**: Get clues about population, capital, or continent
+- [ ] **Leaderboard**: Track high scores using localStorage
+- [ ] **Achievements**: Unlock badges for milestones (10 correct, 50 correct, etc.)
 - [ ] **Sound Effects**: Audio feedback for correct/incorrect answers
-- [ ] **Achievements**: Unlock badges for milestones
+- [ ] **PWA Support**: Offline capability and installable app
+- [ ] **More Languages**: Spanish, German, Italian, Portuguese, etc.
+- [ ] **Statistics**: Track performance over time with charts
 - [ ] **Share Results**: Share your score on social media
-- [ ] **Offline Support**: Progressive Web App (PWA) capabilities
-- [ ] **More Languages**: Expand beyond EN/FR (ES, DE, IT, etc.)
-- [ ] **Flag Details**: Learn interesting facts about each country
 
 ## 📝 License
 
-This project is open source and available under the MIT License.
+This project is open source and available under the [MIT License](LICENSE).
 
 ## 👤 Author
 
 **mvmser**
 
 - GitHub: [@mvmser](https://github.com/mvmser)
+- Repository: [find-the-flag](https://github.com/mvmser/find-the-flag)
 
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
 
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 🙏 Acknowledgments
+
+- Flag images from [Wikimedia Commons](https://commons.wikimedia.org/)
+- Inspired by geography quiz games and educational tools
+- Built with modern web technologies and best practices
+
 ---
 
-**Note**: This is currently a project structure setup. Implementation of game features is in progress.
+**Enjoy playing Find the Flag! 🎉**
