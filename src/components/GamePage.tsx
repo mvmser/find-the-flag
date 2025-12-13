@@ -93,11 +93,11 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     if (answerState !== 'unanswered') return;
     
     // Mark as incorrect when time runs out
+    // Don't set previousCorrectCode since user didn't actively see the answer
     setAnswerState('incorrect');
     setGameState((prev) => ({
       ...prev,
       total: prev.total + 1,
-      previousCorrectCode: currentQuestion.correct.code,
     }));
   };
 
@@ -144,9 +144,10 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   // Determine grid columns based on option count
   const getGridClass = () => {
     const baseClass = 'options-grid';
-    if (settings.optionCount === 6) return `${baseClass} options-grid-6`;
-    if (settings.optionCount === 8) return `${baseClass} options-grid-8`;
-    return baseClass;
+    const modifierClass = settings.optionCount === 6 ? 'options-grid-6' 
+      : settings.optionCount === 8 ? 'options-grid-8' 
+      : null;
+    return [baseClass, modifierClass].filter(Boolean).join(' ');
   };
 
   return (

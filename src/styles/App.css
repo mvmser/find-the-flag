@@ -149,7 +149,7 @@
 
 /* Game Page */
 .game-page {
-  height: 100vh;
+  min-height: 100vh;
   overflow: hidden;
 }
 
@@ -516,6 +516,57 @@
   color: var(--color-text-secondary);
   margin: 0;
   text-align: center;
+}
+
+/* Dialog/Modal */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-md);
+}
+
+.dialog-container {
+  background-color: var(--color-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.dialog-content {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.dialog-message {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+.dialog-actions .btn {
+  flex: 1;
+  min-width: 100px;
 }
 
 /* Mobile Optimizations */

@@ -5,6 +5,7 @@ import { GameSettings } from '../types';
 import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { LanguageToggle } from './LanguageToggle';
+import { ConfirmDialog } from './ConfirmDialog';
 import { loadSettings, saveSettings, loadTotalScore, resetTotalScore } from '../utils/storage';
 
 interface SettingsPageProps {
@@ -12,8 +13,11 @@ interface SettingsPageProps {
   onSettingsChange: (settings: GameSettings) => void;
 }
 
+export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
+  const { language } = useLanguage();
   const [settings, setSettings] = useState<GameSettings>(loadSettings());
   const [totalScore, setTotalScore] = useState(loadTotalScore());
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const handleOptionCountChange = (count: 4 | 6 | 8) => {
     const newSettings = { ...settings, optionCount: count };
@@ -36,11 +40,18 @@ interface SettingsPageProps {
     onSettingsChange(newSettings);
   };
 
-  const handleResetScore = () => {
-    if (confirm(t('settings.confirmReset', language))) {
-      resetTotalScore();
-      setTotalScore(0);
-    }
+  const handleResetScoreClick = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmReset = () => {
+    resetTotalScore();
+    setTotalScore(0);
+    setShowConfirmDialog(false);
+  };
+
+  const handleCancelReset = () => {
+    setShowConfirmDialog(false);
   };
 
   return (
@@ -58,7 +69,7 @@ interface SettingsPageProps {
         <div className="settings-section">
           <h2 className="settings-section-title">{t('game.totalScore', language)}</h2>
           <div className="total-score-display">{totalScore}</div>
-          <button className="btn btn-secondary" onClick={handleResetScore}>
+          <button className="btn btn-secondary" onClick={handleResetScoreClick}>
             {t('settings.resetScore', language)}
           </button>
         </div>
@@ -111,6 +122,14 @@ interface SettingsPageProps {
           )}
         </div>
       </div>
+
+      {showConfirmDialog && (
+        <ConfirmDialog
+          message={t('settings.confirmReset', language)}
+          onConfirm={handleConfirmReset}
+          onCancel={handleCancelReset}
+        />
+      )}
     </div>
   );
 }

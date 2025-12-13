@@ -37,6 +37,8 @@ export const en = {
     gameMode: 'Game Mode',
     multipleChoice: 'Multiple Choice',
     freeText: 'Free Text Input',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
   },
   flag: {
     alt: 'Flag of',

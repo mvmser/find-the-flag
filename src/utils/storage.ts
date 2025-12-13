@@ -47,7 +47,32 @@ export function loadSettings(): GameSettings {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (stored) {
-      return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
+      const parsed = JSON.parse(stored);
+      
+      // Validate and sanitize stored settings
+      const validatedSettings: GameSettings = { ...DEFAULT_SETTINGS };
+      
+      // Validate optionCount
+      if (parsed.optionCount === 4 || parsed.optionCount === 6 || parsed.optionCount === 8) {
+        validatedSettings.optionCount = parsed.optionCount;
+      }
+      
+      // Validate timerEnabled
+      if (typeof parsed.timerEnabled === 'boolean') {
+        validatedSettings.timerEnabled = parsed.timerEnabled;
+      }
+      
+      // Validate timerDuration
+      if (typeof parsed.timerDuration === 'number' && parsed.timerDuration > 0) {
+        validatedSettings.timerDuration = parsed.timerDuration;
+      }
+      
+      // Validate gameMode
+      if (parsed.gameMode === 'multiple-choice' || parsed.gameMode === 'free-text') {
+        validatedSettings.gameMode = parsed.gameMode;
+      }
+      
+      return validatedSettings;
     }
   } catch {
     // Fall through to default

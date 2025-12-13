@@ -15,7 +15,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Fetch event - serve from cache when possible, cache Wikipedia images
+// Fetch event - serve from cache when possible, cache Wikipedia images and Vite assets
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
@@ -47,13 +47,42 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // For other requests, use cache-first strategy
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
+  // For Vite-generated assets (JS, CSS) and same-origin requests, use cache-first with network fallback
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        return fetch(event.request).then((networkResponse) => {
+          // Cache Vite assets (JS, CSS, fonts, images from assets folder)
+          if (networkResponse && networkResponse.status === 200 &&
+              (event.request.url.includes('/assets/') || 
+               event.request.destination === 'script' || 
+               event.request.destination === 'style')) {
+            return caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, networkResponse.clone());
+              return networkResponse;
+            });
+          }
+          return networkResponse;
+        }).catch((error) => {
+          // Handle fetch errors for offline scenarios
+          console.error('Fetch failed:', error);
+          // Return a basic offline page if available in cache
+          return caches.match('/find-the-flag/index.html');
+        });
       })
+    );
+    return;
+  }
+  
+  // For other requests (external resources), use network-first strategy
+  event.respondWith(
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
+    })
   );
 });
 

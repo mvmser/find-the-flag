@@ -39,6 +39,8 @@ export const fr: TranslationKeys = {
     gameMode: 'Mode de Jeu',
     multipleChoice: 'Choix Multiples',
     freeText: 'Saisie Libre',
+    confirm: 'Confirmer',
+    cancel: 'Annuler',
   },
   flag: {
     alt: 'Drapeau de',
