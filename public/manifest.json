@@ -1,0 +1,28 @@
+{
+  "name": "Find the Flag",
+  "short_name": "Find Flag",
+  "description": "A mobile-first flag guessing game in English and French",
+  "start_url": "/find-the-flag/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4a90e2",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/find-the-flag/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/find-the-flag/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/find-the-flag/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

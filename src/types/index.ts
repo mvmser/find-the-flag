@@ -15,4 +15,10 @@ export interface GameState {
   previousCorrectCode?: string;
 }
 
+export interface GameSettings {
+  optionCount: 4 | 6 | 8;
+  timerEnabled: boolean;
+  timerDuration: number;
+}
+
 export type Language = 'en' | 'fr';

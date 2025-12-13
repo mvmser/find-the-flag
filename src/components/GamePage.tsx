@@ -3,27 +3,32 @@
 import { useState } from 'react';
 import { Country } from '../data/countries';
 import { countries } from '../data/countries';
-import { GameState } from '../types';
+import { GameState, GameSettings } from '../types';
 import { buildQuestion } from '../lib/game';
 import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
 import { LanguageToggle } from './LanguageToggle';
+import { Timer } from './Timer';
+import { loadTotalScore, saveTotalScore, loadSettings } from '../utils/storage';
 
 interface GamePageProps {
   onGoHome: () => void;
+  settings?: GameSettings;
 }
 
 type AnswerState = 'unanswered' | 'correct' | 'incorrect';
 
-export function GamePage({ onGoHome }: GamePageProps) {
+export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const { language } = useLanguage();
+  const [settings] = useState<GameSettings>(propsSettings || loadSettings());
+  const [totalScore, setTotalScore] = useState(loadTotalScore());
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     total: 0,
   });
   const [currentQuestion, setCurrentQuestion] = useState(() =>
-    buildQuestion(countries)
+    buildQuestion(countries, undefined, settings.optionCount)
   );
   const [selectedOption, setSelectedOption] = useState<Country | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
@@ -40,10 +45,28 @@ export function GamePage({ onGoHome }: GamePageProps) {
       total: prev.total + 1,
       previousCorrectCode: currentQuestion.correct.code,
     }));
+
+    if (isCorrect) {
+      const newTotal = totalScore + 1;
+      setTotalScore(newTotal);
+      saveTotalScore(newTotal);
+    }
+  };
+
+  const handleTimeUp = () => {
+    if (answerState !== 'unanswered') return;
+    
+    // Mark as incorrect when time runs out
+    setAnswerState('incorrect');
+    setGameState((prev) => ({
+      ...prev,
+      total: prev.total + 1,
+      previousCorrectCode: currentQuestion.correct.code,
+    }));
   };
 
   const handleNext = () => {
-    const newQuestion = buildQuestion(countries, gameState.previousCorrectCode);
+    const newQuestion = buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
     setAnswerState('unanswered');
@@ -51,7 +74,7 @@ export function GamePage({ onGoHome }: GamePageProps) {
 
   const handleRestart = () => {
     setGameState({ score: 0, total: 0 });
-    const newQuestion = buildQuestion(countries);
+    const newQuestion = buildQuestion(countries, undefined, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
     setAnswerState('unanswered');
@@ -80,6 +103,14 @@ export function GamePage({ onGoHome }: GamePageProps) {
     return classes.join(' ');
   };
 
+  // Determine grid columns based on option count
+  const getGridClass = () => {
+    const baseClass = 'options-grid';
+    if (settings.optionCount === 6) return `${baseClass} options-grid-6`;
+    if (settings.optionCount === 8) return `${baseClass} options-grid-8`;
+    return baseClass;
+  };
+
   return (
     <div className="page game-page">
       <div className="game-header">
@@ -90,9 +121,22 @@ export function GamePage({ onGoHome }: GamePageProps) {
       </div>
 
       <div className="game-content">
-        <div className="score-display">
-          {t('game.score', language)}: {gameState.score} / {gameState.total}
+        <div className="game-stats">
+          <div className="score-display">
+            {t('game.score', language)}: {gameState.score} / {gameState.total}
+          </div>
+          <div className="total-score-badge">
+            {t('game.totalScore', language)}: {totalScore}
+          </div>
         </div>
+
+        {settings.timerEnabled && (
+          <Timer 
+            duration={settings.timerDuration} 
+            onTimeUp={handleTimeUp}
+            isActive={answerState === 'unanswered'}
+          />
+        )}
 
         <FlagImage
           flagUrl={currentQuestion.correct.flagUrl}
@@ -101,7 +145,7 @@ export function GamePage({ onGoHome }: GamePageProps) {
 
         <h2 className="game-question">{t('game.question', language)}</h2>
 
-        <div className="options-grid">
+        <div className={getGridClass()}>
           {currentQuestion.options.map((option) => (
             <button
               key={option.code}
