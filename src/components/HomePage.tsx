@@ -9,6 +9,9 @@ interface HomePageProps {
   onOpenSettings: () => void;
 }
 
+// Import version from package.json
+const APP_VERSION = '0.4.0';
+
 export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
   const { language } = useLanguage();
 
@@ -30,7 +33,8 @@ export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
       </div>
       
       <footer className="home-footer">
-        {t('home.madeBy', language)}
+        <div>{t('home.madeBy', language)}</div>
+        <div className="version">{t('home.version', language)} {APP_VERSION}</div>
       </footer>
     </div>
   );

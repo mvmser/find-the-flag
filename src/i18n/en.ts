@@ -7,6 +7,7 @@ export const en = {
     startGame: 'Start Game',
     settings: 'Settings',
     madeBy: 'Made with ❤️ by Mohtech',
+    version: 'Version',
   },
   game: {
     question: 'Which country is this flag?',
@@ -69,6 +70,10 @@ export const en = {
     lookAtMyScore: 'Look at my score!',
     hasCorrectAnswers: 'has made {score} correct answers out of {total} questions',
     inTime: 'in {time}',
+  },
+  update: {
+    available: 'A new version is available!',
+    reload: 'Update Now',
   },
 };
 

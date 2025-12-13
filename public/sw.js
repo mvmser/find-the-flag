@@ -1,7 +1,7 @@
 // Service Worker for offline support
 
-const CACHE_NAME = 'find-the-flag-v1';
-const IMAGE_CACHE_NAME = 'find-the-flag-images-v1';
+const CACHE_NAME = 'find-the-flag-v2';
+const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
 const urlsToCache = [
   '/find-the-flag/',
   '/find-the-flag/index.html',
@@ -99,7 +99,15 @@ self.addEventListener('activate', (event) => {
         }).filter(Boolean)
       );
     }).then(() => {
+      // Immediately claim all clients so the new service worker takes control
       return self.clients.claim();
     })
   );
+});
+
+// Message event - handle skip waiting command from client
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

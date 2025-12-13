@@ -9,6 +9,7 @@ export const fr: TranslationKeys = {
     startGame: 'Commencer',
     settings: 'Paramètres',
     madeBy: 'Fait avec ❤️ par Mohtech',
+    version: 'Version',
   },
   game: {
     question: 'De quel pays est ce drapeau?',
@@ -71,5 +72,9 @@ export const fr: TranslationKeys = {
     lookAtMyScore: 'Regardez mon score!',
     hasCorrectAnswers: 'a fait {score} bonnes réponses sur {total} questions',
     inTime: 'en {time}',
+  },
+  update: {
+    available: 'Une nouvelle version est disponible!',
+    reload: 'Mettre à jour',
   },
 };
