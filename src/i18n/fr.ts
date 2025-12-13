@@ -8,6 +8,7 @@ export const fr: TranslationKeys = {
     subtitle: 'Testez vos connaissances des drapeaux du monde!',
     startGame: 'Commencer',
     settings: 'Paramètres',
+    madeBy: 'Fait avec ❤️ par Mohtech',
   },
   game: {
     question: 'De quel pays est ce drapeau?',
@@ -23,6 +24,7 @@ export const fr: TranslationKeys = {
     yourAnswer: 'Votre réponse:',
     typeCountryName: 'Tapez le nom du pays...',
     submit: 'Soumettre',
+    shareScore: 'Partager le Score',
   },
   settings: {
     title: 'Paramètres',
@@ -41,9 +43,17 @@ export const fr: TranslationKeys = {
     freeText: 'Saisie Libre',
     confirm: 'Confirmer',
     cancel: 'Annuler',
+    pseudonym: 'Pseudonyme',
+    enterPseudonym: 'Entrez votre pseudonyme...',
   },
   flag: {
     alt: 'Drapeau de',
     unavailable: 'Image non disponible',
+  },
+  score: {
+    title: 'Score Atteint',
+    achieved: 'a atteint un score de',
+    playNow: 'Jouer Maintenant',
+    congrats: 'Félicitations!',
   },
 };

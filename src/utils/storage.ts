@@ -5,6 +5,7 @@ import { GameSettings } from '../types';
 const STORAGE_KEYS = {
   TOTAL_SCORE: 'findTheFlag_totalScore',
   SETTINGS: 'findTheFlag_settings',
+  PSEUDONYM: 'findTheFlag_pseudonym',
 } as const;
 
 export const DEFAULT_SETTINGS: GameSettings = {
@@ -84,6 +85,24 @@ export function loadSettings(): GameSettings {
 export function saveSettings(settings: GameSettings): void {
   try {
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+  } catch {
+    // Silent fail if localStorage is not available
+  }
+}
+
+// Pseudonym persistence
+export function loadPseudonym(): string {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.PSEUDONYM);
+    return stored || '';
+  } catch {
+    return '';
+  }
+}
+
+export function savePseudonym(pseudonym: string): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.PSEUDONYM, pseudonym);
   } catch {
     // Silent fail if localStorage is not available
   }

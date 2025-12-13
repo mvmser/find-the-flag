@@ -10,7 +10,7 @@ import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
 import { LanguageToggle } from './LanguageToggle';
 import { Timer } from './Timer';
-import { loadTotalScore, saveTotalScore, loadSettings } from '../utils/storage';
+import { loadTotalScore, saveTotalScore, loadSettings, loadPseudonym } from '../utils/storage';
 
 interface GamePageProps {
   onGoHome: () => void;
@@ -120,6 +120,32 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     setAnswerState('unanswered');
   };
 
+  const handleShare = () => {
+    const pseudonym = loadPseudonym() || 'Anonymous';
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?username=${encodeURIComponent(pseudonym)}&score=${totalScore}`;
+    
+    // Try to use Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: 'Find the Flag - My Score',
+        text: `${pseudonym} achieved a score of ${totalScore} in Find the Flag!`,
+        url: shareUrl,
+      }).catch((error) => {
+        // User cancelled or error occurred
+        console.log('Share cancelled or failed:', error);
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('Link copied to clipboard!');
+      }).catch(() => {
+        // Fallback: show the URL
+        prompt('Copy this link to share your score:', shareUrl);
+      });
+    }
+  };
+
   const getCountryName = (country: Country) => {
     return language === 'fr' ? country.name_fr : country.name_en;
   };
@@ -170,6 +196,10 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
             {t('game.totalScore', language)}: {totalScore}
           </div>
         </div>
+        
+        <button className="btn btn-secondary share-btn" onClick={handleShare}>
+          📤 {t('game.shareScore', language)}
+        </button>
 
         {settings.timerEnabled && (
           <Timer 

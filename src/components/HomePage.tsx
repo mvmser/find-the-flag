@@ -28,6 +28,10 @@ export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
           {t('home.settings', language)}
         </button>
       </div>
+      
+      <footer className="home-footer">
+        {t('home.madeBy', language)}
+      </footer>
     </div>
   );
 }

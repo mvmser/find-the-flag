@@ -6,6 +6,7 @@ export const en = {
     subtitle: 'Test your knowledge of world flags!',
     startGame: 'Start Game',
     settings: 'Settings',
+    madeBy: 'Made with ❤️ by Mohtech',
   },
   game: {
     question: 'Which country is this flag?',
@@ -21,6 +22,7 @@ export const en = {
     yourAnswer: 'Your answer:',
     typeCountryName: 'Type the country name...',
     submit: 'Submit',
+    shareScore: 'Share Score',
   },
   settings: {
     title: 'Settings',
@@ -39,10 +41,18 @@ export const en = {
     freeText: 'Free Text Input',
     confirm: 'Confirm',
     cancel: 'Cancel',
+    pseudonym: 'Pseudonym',
+    enterPseudonym: 'Enter your pseudonym...',
   },
   flag: {
     alt: 'Flag of',
     unavailable: 'Image unavailable',
+  },
+  score: {
+    title: 'Score Achievement',
+    achieved: 'achieved a score of',
+    playNow: 'Play Now',
+    congrats: 'Congratulations!',
   },
 };
 
