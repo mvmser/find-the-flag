@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Country } from '../data/countries';
 import { countries } from '../data/countries';
 import { GameState, GameSettings } from '../types';
-import { buildQuestion } from '../lib/game';
+import { buildQuestion, buildQuestionWithDifficulty } from '../lib/game';
 import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
@@ -29,7 +29,9 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     startTime: Date.now(),
   });
   const [currentQuestion, setCurrentQuestion] = useState(() =>
-    buildQuestion(countries, undefined, settings.optionCount)
+    settings.difficulty === 'easy' 
+      ? buildQuestion(countries, undefined, settings.optionCount)
+      : buildQuestionWithDifficulty(countries, settings.difficulty, undefined, settings.optionCount)
   );
   const [selectedOption, setSelectedOption] = useState<Country | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
@@ -135,7 +137,9 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     if (autoAdvanceCountdown <= 0) {
       cancelAutoAdvance();
       // Inline next logic to avoid dependency
-      const newQuestion = buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount);
+      const newQuestion = settings.difficulty === 'easy'
+        ? buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount)
+        : buildQuestionWithDifficulty(countries, settings.difficulty, gameState.previousCorrectCode, settings.optionCount);
       setCurrentQuestion(newQuestion);
       setSelectedOption(null);
       setTextInput('');
@@ -152,11 +156,13 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
         clearInterval(autoAdvanceTimerRef.current);
       }
     };
-  }, [autoAdvanceCountdown, gameState.previousCorrectCode, settings.optionCount]);
+  }, [autoAdvanceCountdown, gameState.previousCorrectCode, settings.optionCount, settings.difficulty]);
 
   const handleNext = () => {
     cancelAutoAdvance();
-    const newQuestion = buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount);
+    const newQuestion = settings.difficulty === 'easy'
+      ? buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount)
+      : buildQuestionWithDifficulty(countries, settings.difficulty, gameState.previousCorrectCode, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
     setTextInput('');
@@ -175,7 +181,9 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
   const handleRestart = () => {
     setGameState({ score: 0, total: 0, startTime: Date.now() });
-    const newQuestion = buildQuestion(countries, undefined, settings.optionCount);
+    const newQuestion = settings.difficulty === 'easy'
+      ? buildQuestion(countries, undefined, settings.optionCount)
+      : buildQuestionWithDifficulty(countries, settings.difficulty, undefined, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
     setTextInput('');

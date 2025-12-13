@@ -6,6 +6,8 @@ export interface Country {
   name_en: string;
   name_fr: string;
   flagUrl: string;
+  difficulty?: 1 | 2 | 3; // 1=easy, 2=medium, 3=hard
+  flagColors?: string[]; // Primary colors for similarity matching
 }
 
 export const countries: Country[] = [
