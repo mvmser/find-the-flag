@@ -329,6 +329,7 @@ When incrementing the version (with each PR), update these **3 locations**:
    ```
    When updating from v0.4.0 to v0.5.0, change `v2` to `v3`
 
+   **Note:** The cache version suffix (e.g., `v2`, `v3`, etc.) is independent of the app's semantic version number. It should be incremented sequentially with each deployment, regardless of whether the app version bump is a patch, minor, or major update. This ensures that users always receive the latest assets and that old caches are properly invalidated.
 ### Version Increment Guidelines
 
 - **Patch** (0.4.x): Bug fixes, minor UI tweaks, translation updates
