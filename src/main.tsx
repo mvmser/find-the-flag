@@ -66,20 +66,32 @@ function showUpdateNotification(worker: ServiceWorker) {
   // Create notification element
   const notification = document.createElement('div');
   notification.className = 'update-notification';
-  notification.innerHTML = `
-    <div class="update-notification-content">
-      <p class="update-notification-text">${text.message}</p>
-      <button class="btn btn-primary btn-small update-btn">${text.button}</button>
-    </div>
-  `;
-  
+
+  // Create content container
+  const content = document.createElement('div');
+  content.className = 'update-notification-content';
+
+  // Create message paragraph
+  const messageP = document.createElement('p');
+  messageP.className = 'update-notification-text';
+  messageP.textContent = text.message;
+
+  // Create update button
+  const updateBtn = document.createElement('button');
+  updateBtn.className = 'btn btn-primary btn-small update-btn';
+  updateBtn.type = 'button';
+  updateBtn.textContent = text.button;
+
+  // Assemble elements
+  content.appendChild(messageP);
+  content.appendChild(updateBtn);
+  notification.appendChild(content);
+
   document.body.appendChild(notification);
-  
+
   // Handle update button click
-  const updateBtn = notification.querySelector('.update-btn');
-  updateBtn?.addEventListener('click', () => {
+  updateBtn.addEventListener('click', () => {
     worker.postMessage({ type: 'SKIP_WAITING' });
-    
     // Reload the page when the new service worker takes control
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
