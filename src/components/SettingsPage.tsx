@@ -31,6 +31,13 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
     onSettingsChange(newSettings);
   };
 
+  const handleGameModeChange = (mode: 'multiple-choice' | 'free-text') => {
+    const newSettings = { ...settings, gameMode: mode };
+    setSettings(newSettings);
+    saveSettings(newSettings);
+    onSettingsChange(newSettings);
+  };
+
   const handleResetScore = () => {
     if (confirm(t('settings.confirmReset', language))) {
       resetTotalScore();
@@ -56,6 +63,24 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
           <button className="btn btn-secondary" onClick={handleResetScore}>
             {t('settings.resetScore', language)}
           </button>
+        </div>
+
+        <div className="settings-section">
+          <h2 className="settings-section-title">{t('settings.gameMode', language)}</h2>
+          <div className="option-count-buttons">
+            <button
+              className={`btn ${settings.gameMode === 'multiple-choice' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => handleGameModeChange('multiple-choice')}
+            >
+              {t('settings.multipleChoice', language)}
+            </button>
+            <button
+              className={`btn ${settings.gameMode === 'free-text' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => handleGameModeChange('free-text')}
+            >
+              {t('settings.freeText', language)}
+            </button>
+          </div>
         </div>
 
         <div className="settings-section">

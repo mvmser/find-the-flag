@@ -32,6 +32,42 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   );
   const [selectedOption, setSelectedOption] = useState<Country | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
+  const [textInput, setTextInput] = useState('');
+
+  const normalizeText = (text: string): string => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, ' ');
+  };
+
+  const checkTextAnswer = (input: string): boolean => {
+    const normalized = normalizeText(input);
+    const correctEn = normalizeText(currentQuestion.correct.name_en);
+    const correctFr = normalizeText(currentQuestion.correct.name_fr);
+    
+    return normalized === correctEn || normalized === correctFr;
+  };
+
+  const handleTextSubmit = () => {
+    if (answerState !== 'unanswered' || !textInput.trim()) return;
+
+    const isCorrect = checkTextAnswer(textInput);
+    setAnswerState(isCorrect ? 'correct' : 'incorrect');
+    setGameState((prev) => ({
+      ...prev,
+      score: isCorrect ? prev.score + 1 : prev.score,
+      total: prev.total + 1,
+      previousCorrectCode: currentQuestion.correct.code,
+    }));
+
+    if (isCorrect) {
+      const newTotal = totalScore + 1;
+      setTotalScore(newTotal);
+      saveTotalScore(newTotal);
+    }
+  };
 
   const handleOptionClick = (option: Country) => {
     if (answerState !== 'unanswered') return;
@@ -69,6 +105,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     const newQuestion = buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
+    setTextInput('');
     setAnswerState('unanswered');
   };
 
@@ -77,6 +114,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     const newQuestion = buildQuestion(countries, undefined, settings.optionCount);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
+    setTextInput('');
     setAnswerState('unanswered');
   };
 
@@ -145,24 +183,51 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
         <h2 className="game-question">{t('game.question', language)}</h2>
 
-        <div className={getGridClass()}>
-          {currentQuestion.options.map((option) => (
-            <button
-              key={option.code}
-              className={getButtonClass(option)}
-              onClick={() => handleOptionClick(option)}
+        {settings.gameMode === 'multiple-choice' ? (
+          <div className={getGridClass()}>
+            {currentQuestion.options.map((option) => (
+              <button
+                key={option.code}
+                className={getButtonClass(option)}
+                onClick={() => handleOptionClick(option)}
+                disabled={answerState !== 'unanswered'}
+              >
+                {getCountryName(option)}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="text-input-container">
+            <input
+              type="text"
+              className="text-input"
+              value={textInput}
+              onChange={(e) => setTextInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleTextSubmit()}
+              placeholder={t('game.typeCountryName', language)}
               disabled={answerState !== 'unanswered'}
+              autoFocus
+            />
+            <button
+              className="btn btn-primary"
+              onClick={handleTextSubmit}
+              disabled={answerState !== 'unanswered' || !textInput.trim()}
             >
-              {getCountryName(option)}
+              {t('game.submit', language)}
             </button>
-          ))}
-        </div>
+          </div>
+        )}
 
         {answerState !== 'unanswered' && (
           <div className={`feedback feedback-${answerState}`}>
             <p className="feedback-message">
               {answerState === 'correct' ? t('game.correct', language) : t('game.incorrect', language)}
             </p>
+            {answerState === 'incorrect' && settings.gameMode === 'free-text' && textInput && (
+              <p className="feedback-answer">
+                {t('game.yourAnswer', language)} <strong>{textInput}</strong>
+              </p>
+            )}
             {answerState === 'incorrect' && (
               <p className="feedback-answer">
                 {t('game.correctAnswer', language)} <strong>{getCountryName(currentQuestion.correct)}</strong>

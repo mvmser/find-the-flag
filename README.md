@@ -15,11 +15,12 @@ A mobile-first, fully static flag guessing web game available in English and Fre
 - **🌐 Bilingual**: Full support for English and French with instant language switching
 - **📱 Mobile-First Design**: Optimized for touch interactions and fits on one screen without scrolling
 - **📊 Score Tracking**: Keep track of correct answers with persistent total score saved locally
-- **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options and toggle timer
+- **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options, toggle timer, and select game mode
+- **🎮 Game Modes**: Multiple choice or free-text input for different difficulty levels
 - **⏱️ Timer Challenge**: Optional 20-second countdown with visual progress bar
 - **🎯 Smart Question Generation**: Avoids repeating the same country consecutively
 - **💾 localStorage Persistence**: Total score and settings saved across sessions
-- **📲 PWA Support**: Install as an app on iPhone/Android with offline capability
+- **📲 PWA Support**: Install as an app on iPhone/Android with offline capability and flag image caching
 - **♿ Accessible**: Proper ARIA labels, focus states, and keyboard navigation
 - **🌙 Dark Mode**: Automatic dark mode support based on system preferences
 - **🚀 Zero Backend**: Fully static site with no server required
@@ -192,14 +193,16 @@ Future enhancements planned for this game:
 - [x] **Variable Answer Options**: Choose between 4, 6, or 8 options ✅
 - [x] **Timer Challenge**: Race against the clock with configurable timer ✅
 - [x] **Persistent Score Tracking**: Total score saved with localStorage ✅
-- [x] **PWA Support**: Offline capability and installable app ✅
-- [ ] **Free-Text Input Mode**: Type the country name for expert mode
+- [x] **PWA Support**: Offline capability and installable app with flag image caching ✅
+- [x] **Free-Text Input Mode**: Type the country name for expert mode ✅
 - [ ] **Difficulty Levels**: Easy (common flags), Medium, Hard (similar flags)
 - [ ] **Regional Challenges**: Focus on specific continents (Africa, Asia, Europe, etc.)
 - [ ] **Hint System**: Get clues about population, capital, or continent
 - [ ] **Achievements**: Unlock badges for milestones (10 correct, 50 correct, etc.)
 - [ ] **Sound Effects**: Audio feedback for correct/incorrect answers
 - [ ] **More Languages**: Spanish, German, Italian, Portuguese, etc.
+- [ ] **Statistics**: Track performance over time with charts
+- [ ] **Share Results**: Share your score on social media
 - [ ] **Statistics**: Track performance over time with charts
 - [ ] **Share Results**: Share your score on social media
 

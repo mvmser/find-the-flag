@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: GameSettings = {
   optionCount: 4,
   timerEnabled: true,
   timerDuration: 20,
+  gameMode: 'multiple-choice',
 };
 
 // Total Score persistence

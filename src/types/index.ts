@@ -15,10 +15,13 @@ export interface GameState {
   previousCorrectCode?: string;
 }
 
+export type GameMode = 'multiple-choice' | 'free-text';
+
 export interface GameSettings {
   optionCount: 4 | 6 | 8;
   timerEnabled: boolean;
   timerDuration: number;
+  gameMode: GameMode;
 }
 
 export type Language = 'en' | 'fr';

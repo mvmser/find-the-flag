@@ -20,6 +20,9 @@ export const fr: TranslationKeys = {
     restart: 'Recommencer',
     timeLeft: 'Temps',
     timeUp: 'Temps écoulé!',
+    yourAnswer: 'Votre réponse:',
+    typeCountryName: 'Tapez le nom du pays...',
+    submit: 'Soumettre',
   },
   settings: {
     title: 'Paramètres',
@@ -33,6 +36,9 @@ export const fr: TranslationKeys = {
     resetScore: 'Réinitialiser le Score Total',
     confirmReset: 'Êtes-vous sûr de vouloir réinitialiser votre score total?',
     back: 'Retour',
+    gameMode: 'Mode de Jeu',
+    multipleChoice: 'Choix Multiples',
+    freeText: 'Saisie Libre',
   },
   flag: {
     alt: 'Drapeau de',

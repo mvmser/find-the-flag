@@ -18,6 +18,9 @@ export const en = {
     restart: 'Restart',
     timeLeft: 'Time',
     timeUp: "Time's up!",
+    yourAnswer: 'Your answer:',
+    typeCountryName: 'Type the country name...',
+    submit: 'Submit',
   },
   settings: {
     title: 'Settings',
@@ -31,6 +34,9 @@ export const en = {
     resetScore: 'Reset Total Score',
     confirmReset: 'Are you sure you want to reset your total score?',
     back: 'Back',
+    gameMode: 'Game Mode',
+    multipleChoice: 'Multiple Choice',
+    freeText: 'Free Text Input',
   },
   flag: {
     alt: 'Flag of',
