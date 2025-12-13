@@ -11,6 +11,7 @@ import { FlagImage } from './FlagImage';
 import { LanguageToggle } from './LanguageToggle';
 import { Timer } from './Timer';
 import { loadTotalScore, saveTotalScore, loadSettings, loadPseudonym, encodeScoreData } from '../utils/storage';
+import { formatTime } from '../utils';
 
 interface GamePageProps {
   onGoHome: () => void;
@@ -44,20 +45,6 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState<number | null>(null);
   const autoAdvanceTimerRef = useRef<number | null>(null);
 
-  // Cancel the auto-advance timer if set
-  const cancelAutoAdvance = useCallback(() => {
-    if (autoAdvanceTimerRef.current !== null) {
-      clearTimeout(autoAdvanceTimerRef.current);
-      autoAdvanceTimerRef.current = null;
-    }
-  }, []);
-
-  // Cleanup effect to cancel timer on unmount
-  useEffect(() => {
-    return () => {
-      cancelAutoAdvance();
-    };
-  }, [cancelAutoAdvance]);
   const normalizeText = (text: string): string => {
     return text
       .normalize('NFD') // Decompose combined characters
@@ -140,13 +127,20 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     setAutoAdvanceCountdown(5);
   };
 
-  const cancelAutoAdvance = () => {
+  const cancelAutoAdvance = useCallback(() => {
     if (autoAdvanceTimerRef.current) {
       clearInterval(autoAdvanceTimerRef.current);
       autoAdvanceTimerRef.current = null;
     }
     setAutoAdvanceCountdown(null);
-  };
+  }, []);
+
+  // Cleanup effect to cancel timer on unmount
+  useEffect(() => {
+    return () => {
+      cancelAutoAdvance();
+    };
+  }, [cancelAutoAdvance]);
 
   // Auto-advance countdown effect
   useEffect(() => {
@@ -277,18 +271,10 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     if (isGameComplete) {
       cancelAutoAdvance();
     }
-  }, [isGameComplete]);
+  }, [isGameComplete, cancelAutoAdvance]);
   // Show game complete screen
   if (isGameComplete && answerState !== 'unanswered') {
     const elapsedTime = gameState.startTime ? Math.floor((Date.now() - gameState.startTime) / 1000) : 0;
-    const formatTime = (seconds: number) => {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      if (mins > 0) {
-        return `${mins}m ${secs}s`;
-      }
-      return `${secs}s`;
-    };
 
     return (
       <div className="page game-page">

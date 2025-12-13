@@ -3,6 +3,7 @@
 import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { LanguageToggle } from './LanguageToggle';
+import { formatTime } from '../utils';
 
 interface ScorePageProps {
   username: string;
@@ -14,15 +15,6 @@ interface ScorePageProps {
 
 export function ScorePage({ username, score, total, timeInSeconds, onPlayNow }: ScorePageProps) {
   const { language } = useLanguage();
-  
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    if (mins > 0) {
-      return `${mins}m ${secs}s`;
-    }
-    return `${secs}s`;
-  };
 
   return (
     <div className="page score-page">
