@@ -11,7 +11,9 @@ import './styles/App.css';
 type Page = 'home' | 'game' | 'settings' | 'score';
 
 function App() {
-  console.log('[App] Initializing App component...');
+  if (import.meta.env.DEV) {
+    console.log('[App] Initializing App component...');
+  }
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [settings, setSettings] = useState<GameSettings>(loadSettings());
   const [sharedScore, setSharedScore] = useState<{ 
