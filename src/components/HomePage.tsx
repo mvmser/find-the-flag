@@ -6,9 +6,10 @@ import { LanguageToggle } from './LanguageToggle';
 
 interface HomePageProps {
   onStartGame: () => void;
+  onOpenSettings: () => void;
 }
 
-export function HomePage({ onStartGame }: HomePageProps) {
+export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
   const { language } = useLanguage();
 
   return (
@@ -22,6 +23,9 @@ export function HomePage({ onStartGame }: HomePageProps) {
         <p className="home-subtitle">{t('home.subtitle', language)}</p>
         <button className="btn btn-primary btn-large" onClick={onStartGame}>
           {t('home.startGame', language)}
+        </button>
+        <button className="btn btn-secondary" onClick={onOpenSettings}>
+          {t('home.settings', language)}
         </button>
       </div>
     </div>

@@ -34,27 +34,28 @@ export function pickRandomCountry(
 }
 
 /**
- * Build a question with 4 options (1 correct + 3 random incorrect)
+ * Build a question with configurable number of options (1 correct + N-1 random incorrect)
  * Ensures no duplicates and avoids repeating the previous correct answer
  */
 export function buildQuestion(
   countries: Country[],
-  previousCorrectCode?: string
+  previousCorrectCode?: string,
+  optionCount: number = 4
 ): GameQuestion {
-  if (countries.length < 4) {
-    throw new Error('Need at least 4 countries to build a question');
+  if (countries.length < optionCount) {
+    throw new Error(`Need at least ${optionCount} countries to build a question`);
   }
 
   // Pick the correct answer (avoid the previous one if possible)
   const correct = pickRandomCountry(countries, previousCorrectCode);
   
-  // Pick 3 random incorrect options (excluding the correct one)
+  // Pick N-1 random incorrect options (excluding the correct one)
   const incorrect: Country[] = [];
   const availableIncorrect = countries.filter((c) => c.code !== correct.code);
   
-  // Use Fisher-Yates shuffle and take first 3 for O(n) complexity
+  // Use Fisher-Yates shuffle and take first N-1 for O(n) complexity
   const shuffledIncorrect = shuffle(availableIncorrect);
-  for (let i = 0; i < Math.min(3, shuffledIncorrect.length); i++) {
+  for (let i = 0; i < Math.min(optionCount - 1, shuffledIncorrect.length); i++) {
     incorrect.push(shuffledIncorrect[i]);
   }
   
