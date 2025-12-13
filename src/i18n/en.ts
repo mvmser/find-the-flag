@@ -28,6 +28,7 @@ export const en = {
     progress: 'Question {current} of {total}',
     gameComplete: 'Game Complete!',
     yourScore: 'Your score:',
+    time: 'Time',
   },
   settings: {
     title: 'Settings',

@@ -30,6 +30,7 @@ export const fr: TranslationKeys = {
     progress: 'Question {current} sur {total}',
     gameComplete: 'Jeu Terminé!',
     yourScore: 'Votre score:',
+    time: 'Temps',
   },
   settings: {
     title: 'Paramètres',

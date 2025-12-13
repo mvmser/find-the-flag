@@ -40,8 +40,8 @@ export function encodeScoreData(username: string, score: number, total?: number,
     u: username, 
     s: score, 
     t: Date.now(),
-    total: total || score,
-    time: timeInSeconds || 0
+    total: total ?? score,
+    time: timeInSeconds ?? 0
   });
   return btoa(data); // Base64 encode
 }

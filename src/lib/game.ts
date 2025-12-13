@@ -124,6 +124,10 @@ export function getSimilarFlags(country: Country, allCountries: Country[]): Coun
 
 /**
  * Filter countries by difficulty level
+ * Note: Ranges intentionally overlap to ensure enough variety at each level:
+ * - Easy: includes level 1 and 2 countries (well-known and moderate)
+ * - Medium: includes level 2 and 3 countries (moderate and lesser-known)
+ * - Hard: includes level 3 and 2 countries (lesser-known and moderate)
  */
 export function filterByDifficulty(
   countries: Country[],

@@ -1,6 +1,6 @@
 // Game page component
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Country } from '../data/countries';
 import { countries } from '../data/countries';
 import { GameState, GameSettings } from '../types';
@@ -28,11 +28,15 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     total: 0,
     startTime: Date.now(),
   });
-  const [currentQuestion, setCurrentQuestion] = useState(() =>
-    settings.difficulty === 'easy' 
-      ? buildQuestion(countries, undefined, settings.optionCount)
-      : buildQuestionWithDifficulty(countries, settings.difficulty, undefined, settings.optionCount)
-  );
+  
+  // Helper function to build a new question based on difficulty
+  const buildNewQuestion = useCallback((previousCode?: string) => {
+    return settings.difficulty === 'easy'
+      ? buildQuestion(countries, previousCode, settings.optionCount)
+      : buildQuestionWithDifficulty(countries, settings.difficulty, previousCode, settings.optionCount);
+  }, [settings.difficulty, settings.optionCount]);
+  
+  const [currentQuestion, setCurrentQuestion] = useState(() => buildNewQuestion());
   const [selectedOption, setSelectedOption] = useState<Country | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
   const [textInput, setTextInput] = useState('');
@@ -137,9 +141,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     if (autoAdvanceCountdown <= 0) {
       cancelAutoAdvance();
       // Inline next logic to avoid dependency
-      const newQuestion = settings.difficulty === 'easy'
-        ? buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount)
-        : buildQuestionWithDifficulty(countries, settings.difficulty, gameState.previousCorrectCode, settings.optionCount);
+      const newQuestion = buildNewQuestion(gameState.previousCorrectCode);
       setCurrentQuestion(newQuestion);
       setSelectedOption(null);
       setTextInput('');
@@ -156,13 +158,11 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
         clearInterval(autoAdvanceTimerRef.current);
       }
     };
-  }, [autoAdvanceCountdown, gameState.previousCorrectCode, settings.optionCount, settings.difficulty]);
+  }, [autoAdvanceCountdown, gameState.previousCorrectCode, buildNewQuestion]);
 
   const handleNext = () => {
     cancelAutoAdvance();
-    const newQuestion = settings.difficulty === 'easy'
-      ? buildQuestion(countries, gameState.previousCorrectCode, settings.optionCount)
-      : buildQuestionWithDifficulty(countries, settings.difficulty, gameState.previousCorrectCode, settings.optionCount);
+    const newQuestion = buildNewQuestion(gameState.previousCorrectCode);
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
     setTextInput('');
@@ -181,9 +181,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
   const handleRestart = () => {
     setGameState({ score: 0, total: 0, startTime: Date.now() });
-    const newQuestion = settings.difficulty === 'easy'
-      ? buildQuestion(countries, undefined, settings.optionCount)
-      : buildQuestionWithDifficulty(countries, settings.difficulty, undefined, settings.optionCount);
+    const newQuestion = buildNewQuestion();
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
     setTextInput('');
@@ -285,7 +283,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
             
             {elapsedTime > 0 && (
               <div className="game-complete-stat">
-                <div className="game-complete-label">{t('game.timeLeft', language)}:</div>
+                <div className="game-complete-label">{t('game.time', language)}:</div>
                 <div className="game-complete-value">{formatTime(elapsedTime)}</div>
               </div>
             )}
