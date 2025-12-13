@@ -20,7 +20,7 @@ export function loadTotalScore(): number {
     const stored = localStorage.getItem(STORAGE_KEYS.TOTAL_SCORE);
     if (!stored) return 0;
     const parsed = parseInt(stored, 10);
-    return isNaN(parsed) ? 0 : parsed;
+    return (isNaN(parsed) || parsed < 0) ? 0 : parsed;
   } catch {
     return 0;
   }
@@ -62,8 +62,8 @@ export function loadSettings(): GameSettings {
         validatedSettings.timerEnabled = parsed.timerEnabled;
       }
       
-      // Validate timerDuration
-      if (typeof parsed.timerDuration === 'number' && parsed.timerDuration > 0) {
+      // Validate timerDuration (must be > 0 and <= 60 seconds)
+      if (typeof parsed.timerDuration === 'number' && parsed.timerDuration > 0 && parsed.timerDuration <= 60) {
         validatedSettings.timerDuration = parsed.timerDuration;
       }
       

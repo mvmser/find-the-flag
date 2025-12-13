@@ -209,7 +209,6 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
               onKeyDown={(e) => e.key === 'Enter' && handleTextSubmit()}
               placeholder={t('game.typeCountryName', language)}
               aria-label={t('game.typeCountryName', language)}
-              aria-label={t('game.typeCountryName', language)}
               disabled={answerState !== 'unanswered'}
               autoFocus
             />
