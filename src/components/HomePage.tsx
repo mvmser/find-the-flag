@@ -9,6 +9,12 @@ interface HomePageProps {
   onOpenSettings: () => void;
 }
 
+// Version number - update this when incrementing version
+// Note: This is intentionally hardcoded to avoid bundling package.json metadata
+// in the production build. When updating the version, change this constant AND
+// package.json version.
+const APP_VERSION = '0.4.0';
+
 export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
   const { language } = useLanguage();
 
@@ -30,7 +36,8 @@ export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
       </div>
       
       <footer className="home-footer">
-        {t('home.madeBy', language)}
+        <div>{t('home.madeBy', language)}</div>
+        <div className="version">{t('home.version', language)} {APP_VERSION}</div>
       </footer>
     </div>
   );

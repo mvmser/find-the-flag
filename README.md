@@ -15,12 +15,14 @@ A mobile-first, fully static flag guessing web game available in English and Fre
 - **🌐 Bilingual**: Full support for English and French with instant language switching
 - **📱 Mobile-First Design**: Optimized for touch interactions and fits on one screen without scrolling
 - **📊 Score Tracking**: Keep track of correct answers with persistent total score saved locally
-- **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options, toggle timer, and select game mode
-- **🎮 Game Modes**: Multiple choice or free-text input for different difficulty levels
+- **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options, toggle timer, select game mode, and set question count
+- **🎮 Game Modes**: Multiple choice or free-text input for different skill levels
+- **🎚️ Difficulty Levels**: Easy, Medium, or Hard modes to match your expertise
 - **⏱️ Timer Challenge**: Optional 20-second countdown with visual progress bar
 - **🎯 Smart Question Generation**: Avoids repeating the same country consecutively
 - **💾 localStorage Persistence**: Total score and settings saved across sessions
 - **📲 PWA Support**: Install as an app on iPhone/Android with offline capability and flag image caching
+- **🔄 Auto-Update**: Automatic detection of new versions with prompt to update
 - **♿ Accessible**: Proper ARIA labels, focus states, and keyboard navigation
 - **🌙 Dark Mode**: Automatic dark mode support based on system preferences
 - **🚀 Zero Backend**: Fully static site with no server required
@@ -41,7 +43,9 @@ This project uses modern web technologies with minimal dependencies:
 - Pure TypeScript game logic with testable functions
 - Custom lightweight i18n system (no external library)
 - Context-based state management for language preferences
-- localStorage persistence for language selection
+- localStorage persistence for language selection and settings
+- Service worker with automatic update detection and cache management
+- Progressive Web App (PWA) with offline support
 - Flag images hotlinked from Wikimedia Commons (free, no downloads needed)
 
 ## 🚀 Getting Started
@@ -124,6 +128,57 @@ export default defineConfig({
 })
 ```
 
+### Auto-Update Functionality
+
+The application includes an automatic update detection system that ensures users always have the latest version:
+
+#### How It Works
+
+1. **Service Worker Updates**: The service worker checks for updates every 60 seconds
+2. **Cache Versioning**: Each deployment increments the cache version, forcing cache invalidation
+3. **Update Notification**: When a new version is detected, a notification banner appears at the top of the page
+4. **One-Click Update**: Users can click "Update Now" to reload the app with the latest version
+
+#### Version Management
+
+The app version is displayed in the footer of the home page and should be incremented with each pull request. When incrementing the version, you need to update it in **three places**:
+
+1. **Update `package.json`**:
+   ```json
+   {
+     "version": "0.4.0"
+   }
+   ```
+
+2. **Update the version constant in `src/components/HomePage.tsx`**:
+   ```typescript
+   const APP_VERSION = '0.4.0';
+   ```
+
+3. **Update the service worker cache versions in `public/sw.js`** (increment the suffix number):
+   ```javascript
+   const CACHE_NAME = 'find-the-flag-v2';
+   const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
+   ```
+   
+   **Note:** The cache version suffix (e.g., `v2`, `v3`, etc.) is independent of the app's semantic version number. It should be incremented sequentially with each deployment, regardless of whether the app version bump is a patch, minor, or major update. This ensures that users always receive the latest assets and that old caches are properly invalidated.
+   
+   Example: When updating from v0.4.0 to v0.5.0, change `v2` to `v3`:
+   ```javascript
+   // Before (v0.4.0)
+   const CACHE_NAME = 'find-the-flag-v2';
+   const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
+   
+   // After (v0.5.0)
+   const CACHE_NAME = 'find-the-flag-v3';
+   const IMAGE_CACHE_NAME = 'find-the-flag-images-v3';
+   ```
+
+**Version Increment Guidelines:**
+- **Patch version** (0.4.x): Bug fixes, minor UI tweaks, translation updates
+- **Minor version** (0.x.0): New features, settings additions, game mode enhancements
+- **Major version** (x.0.0): Breaking changes, complete redesigns, major feature overhauls
+
 ## 📁 Project Structure
 
 ```
@@ -159,7 +214,7 @@ find-the-flag/
 ├── public/                 # Static assets
 │   ├── icon.svg            # App icon
 │   ├── manifest.json       # PWA manifest
-│   └── sw.js               # Service worker
+│   └── sw.js               # Service worker with auto-update
 ├── index.html             # HTML entry point
 ├── package.json           # Dependencies and scripts
 ├── tsconfig.json          # TypeScript configuration
@@ -169,7 +224,7 @@ find-the-flag/
 ## 🎯 How to Play
 
 1. **Start**: Click "Start Game" on the home page
-2. **Customize**: Visit Settings to adjust difficulty (4/6/8 options) and toggle the timer
+2. **Customize**: Visit Settings to adjust options count (4/6/8), difficulty level (Easy/Medium/Hard), game mode, timer, and question count
 3. **Identify**: Look at the flag and choose the correct country from multiple options
 4. **Beat the Clock**: Answer within 20 seconds if timer is enabled
 5. **Track Progress**: Your total score persists across sessions
@@ -195,7 +250,9 @@ Future enhancements planned for this game:
 - [x] **Persistent Score Tracking**: Total score saved with localStorage ✅
 - [x] **PWA Support**: Offline capability and installable app with flag image caching ✅
 - [x] **Free-Text Input Mode**: Type the country name for expert mode ✅
-- [ ] **Difficulty Levels**: Easy (common flags), Medium, Hard (similar flags)
+- [x] **Difficulty Levels**: Easy, Medium, Hard modes ✅
+- [x] **Configurable Question Count**: Choose how many questions per game ✅
+- [x] **Score Sharing**: Share your achievements with friends ✅
 - [ ] **Regional Challenges**: Focus on specific continents (Africa, Asia, Europe, etc.)
 - [ ] **Hint System**: Get clues about population, capital, or continent
 - [ ] **Achievements**: Unlock badges for milestones (10 correct, 50 correct, etc.)
