@@ -2,6 +2,10 @@
 
 A mobile-first, fully static flag guessing web game available in English and French. Test your knowledge of world flags in this fun and educational game!
 
+## 🎮 Play Now!
+
+**[Play Find the Flag](https://mvmser.github.io/find-the-flag/)** - Available now on GitHub Pages!
+
 ## 🎮 What is Find the Flag?
 
 **Find the Flag** is an interactive web-based quiz game where players test their knowledge of world flags. Each round presents a flag image, and players must identify which country it belongs to from four multiple-choice options.
@@ -76,24 +80,37 @@ npm run lint
 
 ## 🌐 Deployment to GitHub Pages
 
-This project is designed to be deployed to GitHub Pages with zero configuration:
+This project is automatically deployed to GitHub Pages using GitHub Actions.
 
-### Deployment Steps
+### Automatic Deployment
 
-1. **Build the project**:
-   ```bash
-   npm run build
-   ```
-   This creates an optimized production build in the `dist/` folder.
+The app is automatically built and deployed to GitHub Pages whenever changes are pushed to the `main` branch. The deployment workflow:
 
-2. **Deploy the dist folder**:
-   - The `dist/` folder contains all static files needed for deployment
-   - You can deploy this folder to any static hosting service
-   - For GitHub Pages, you can manually upload the contents or use any deployment method you prefer
+1. Builds the project using `npm run build`
+2. Uploads the built files to GitHub Pages
+3. Makes the app accessible at `https://mvmser.github.io/find-the-flag/`
+
+### Manual Deployment
+
+You can also trigger a deployment manually:
+
+1. Go to the "Actions" tab in the GitHub repository
+2. Select "Deploy to GitHub Pages" workflow
+3. Click "Run workflow"
+
+### Local Build
+
+To build the project locally:
+
+```bash
+npm run build
+```
+
+This creates an optimized production build in the `dist/` folder.
 
 ### Base Path Configuration
 
-If deploying to a subdirectory (like `https://username.github.io/find-the-flag/`), update `vite.config.ts`:
+The project is configured to deploy to a subdirectory (`https://mvmser.github.io/find-the-flag/`) with the base path set in `vite.config.ts`:
 
 ```typescript
 export default defineConfig({
