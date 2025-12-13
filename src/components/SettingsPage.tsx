@@ -12,8 +12,6 @@ interface SettingsPageProps {
   onSettingsChange: (settings: GameSettings) => void;
 }
 
-export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
-  const { language } = useLanguage();
   const [settings, setSettings] = useState<GameSettings>(loadSettings());
   const [totalScore, setTotalScore] = useState(loadTotalScore());
 
