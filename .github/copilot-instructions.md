@@ -75,6 +75,8 @@ export function Component({ onAction }: ComponentProps) {
 ### Translation Keys
 - Use the `t()` function from `src/i18n/index.ts` for all user-facing text
 - Signature: `t(key: TranslationKey, language: Language): string`
+  - `TranslationKey` is a derived type from nested translation keys (auto-completed)
+  - `Language` is `'en' | 'fr'`
 - Translation keys use dot notation: `'section.key'`
 - Define translations in both `src/i18n/en.ts` and `src/i18n/fr.ts`
 
