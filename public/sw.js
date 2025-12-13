@@ -96,7 +96,6 @@ self.addEventListener('activate', (event) => {
           if (cacheName !== CACHE_NAME && cacheName !== IMAGE_CACHE_NAME) {
             return caches.delete(cacheName);
           }
-          return undefined;
         }).filter(Boolean)
       );
     }).then(() => {
