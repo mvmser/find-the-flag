@@ -128,7 +128,8 @@ export function Component({ onAction }: ComponentProps) {
 - Use descriptive, semantic class names
 - Avoid inline styles; use CSS classes
 - Dynamic classes: build an array of class names and join with `classNames.join(' ')`
-  - Example: `const classNames = ['base-class']; if (condition) classNames.push('modifier'); return classNames.join(' ');`
+  - Pattern 1 (local mutation is acceptable): `const classNames = ['base-class']; if (condition) classNames.push('modifier'); return classNames.join(' ');`
+  - Pattern 2 (functional): `const classNames = ['base-class', condition && 'modifier'].filter(Boolean).join(' ');`
 
 ## Data Management
 
