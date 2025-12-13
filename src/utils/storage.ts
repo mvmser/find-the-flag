@@ -17,7 +17,9 @@ export const DEFAULT_SETTINGS: GameSettings = {
 export function loadTotalScore(): number {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.TOTAL_SCORE);
-    return stored ? parseInt(stored, 10) : 0;
+    if (!stored) return 0;
+    const parsed = parseInt(stored, 10);
+    return isNaN(parsed) ? 0 : parsed;
   } catch {
     return 0;
   }

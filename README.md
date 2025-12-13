@@ -199,7 +199,6 @@ Future enhancements planned for this game:
 - [ ] **Hint System**: Get clues about population, capital, or continent
 - [ ] **Achievements**: Unlock badges for milestones (10 correct, 50 correct, etc.)
 - [ ] **Sound Effects**: Audio feedback for correct/incorrect answers
-- [ ] **PWA Support**: Offline capability and installable app
 - [ ] **More Languages**: Spanish, German, Italian, Portuguese, etc.
 - [ ] **Statistics**: Track performance over time with charts
 - [ ] **Share Results**: Share your score on social media
