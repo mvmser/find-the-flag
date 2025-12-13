@@ -223,11 +223,60 @@ export function Component({ onAction }: ComponentProps) {
 
 ## Development Workflow
 
-1. Start dev server: `npm run dev`
-2. Make changes with hot reload
-3. Run linter: `npm run lint`
-4. Build for production: `npm run build`
-5. Preview build: `npm run preview`
+### Setting Up the Development Environment
+1. Install dependencies: `npm install`
+2. Start dev server: `npm run dev` (opens at `http://localhost:5173`)
+3. Make changes with hot reload active
+4. Run linter: `npm run lint` (must pass with zero warnings)
+5. Type check: `tsc` (must pass with no errors)
+6. Build for production: `npm run build` (compiles TypeScript + builds with Vite)
+7. Preview production build: `npm run preview`
+
+### Testing
+- **No test framework**: This project currently has no automated tests (no Jest, Vitest, etc.)
+- When making changes, manually verify functionality by:
+  1. Running the dev server (`npm run dev`)
+  2. Testing the feature in the browser
+  3. Checking both English and French languages
+  4. Testing on mobile viewport and desktop
+  5. Verifying dark mode if styling changes were made
+- Do not add test infrastructure unless explicitly requested
+
+### Running and Previewing
+- **Development**: `npm run dev` starts Vite dev server with hot module replacement
+- **Production Preview**: `npm run build && npm run preview` to test production build locally
+- **Base Path**: When running locally, the app runs at root (`/`), but deploys to `/find-the-flag/` on GitHub Pages
+- **Browser Testing**: Test in Chrome/Firefox/Safari, with mobile viewport (375px width minimum)
+
+## Git Workflow
+
+- **Branches**: Work on feature branches, not directly on `main`
+- **Commits**: Write clear, descriptive commit messages
+- **Before Committing**: Always run `npm run lint` and `npm run build` to ensure code quality
+- **Build Artifacts**: Never commit the `dist/` folder or `node_modules/` (already in `.gitignore`)
+
+## Debugging
+
+### Common Issues
+- **Import Errors**: Check file paths are correct and use `.tsx` extension for React components
+- **Type Errors**: Run `tsc` to see all TypeScript errors at once
+- **Runtime Errors**: Check browser console, use React DevTools for component inspection
+- **Styling Issues**: Inspect with browser DevTools, check CSS class names match
+- **Translation Missing**: Ensure key exists in both `en.ts` and `fr.ts`
+
+### Development Tools
+- **React DevTools**: Browser extension for inspecting component tree and state
+- **Vite DevTools**: Built-in HMR (Hot Module Replacement) shows updates in console
+- **TypeScript**: Run `tsc --watch` in separate terminal for continuous type checking
+- **ESLint**: Integrated in most IDEs for real-time linting feedback
+
+## Deployment
+
+- **Target**: GitHub Pages (`https://mvmser.github.io/find-the-flag/`)
+- **Trigger**: Automatic deployment on push to `main` branch via GitHub Actions
+- **Build Process**: GitHub Actions runs `npm run build` and deploys `dist/` folder
+- **Base Path**: Configured in `vite.config.ts` as `base: '/find-the-flag/'`
+- **Manual Deploy**: Can be triggered from GitHub Actions tab in repository
 
 ## Best Practices Summary
 
@@ -238,3 +287,4 @@ export function Component({ onAction }: ComponentProps) {
 - **Accessibility**: Build with screen readers and keyboard navigation in mind
 - **Performance**: Keep bundle size small, optimize images
 - **Code Quality**: Maintain zero ESLint warnings and TypeScript errors
+- **Manual Testing**: Always test changes in browser before committing (no automated tests)
