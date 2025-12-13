@@ -60,6 +60,8 @@ function showUpdateNotification(worker: ServiceWorker) {
   // Create notification element
   const notification = document.createElement('div');
   notification.className = 'update-notification';
+  notification.setAttribute('role', 'status');
+  notification.setAttribute('aria-live', 'polite');
 
   // Create content container
   const content = document.createElement('div');
