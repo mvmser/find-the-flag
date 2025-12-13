@@ -17,10 +17,14 @@ if ('serviceWorker' in navigator) {
         // Service worker registered successfully
         
         // Check for updates periodically (every 60 seconds)
-        setInterval(() => {
+        const updateIntervalId = setInterval(() => {
           registration.update();
         }, 60000);
-        
+
+        // Clear the interval when the page is unloaded
+        window.addEventListener('unload', () => {
+          clearInterval(updateIntervalId);
+        });
         // Listen for updates
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
