@@ -85,8 +85,11 @@ function showUpdateNotification(worker: ServiceWorker) {
 
   document.body.appendChild(notification);
 
-  // Handle update button click
-  updateBtn.addEventListener('click', () => {
+  // Handle update button click with cleanup
+  const handleUpdateClick = () => {
+    // Remove the click listener to prevent memory leaks
+    updateBtn.removeEventListener('click', handleUpdateClick);
+    
     worker.postMessage({ type: 'SKIP_WAITING' });
     // Reload the page when the new service worker takes control
     let refreshing = false;
@@ -97,6 +100,8 @@ function showUpdateNotification(worker: ServiceWorker) {
       window.location.reload();
     };
     navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
-  });
+  };
+  
+  updateBtn.addEventListener('click', handleUpdateClick);
 }
 

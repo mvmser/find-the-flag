@@ -160,6 +160,9 @@ The app version is displayed in the footer of the home page and should be increm
    const CACHE_NAME = 'find-the-flag-v2';
    const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
    ```
+   
+   **Note:** The cache version suffix (e.g., `v2`, `v3`, etc.) is independent of the app's semantic version number. It should be incremented sequentially with each deployment, regardless of whether the app version bump is a patch, minor, or major update. This ensures that users always receive the latest assets and that old caches are properly invalidated.
+   
    Example: When updating from v0.4.0 to v0.5.0, change `v2` to `v3`:
    ```javascript
    // Before (v0.4.0)

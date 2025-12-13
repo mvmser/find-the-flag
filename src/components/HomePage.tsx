@@ -10,9 +10,9 @@ interface HomePageProps {
 }
 
 // Version number - update this when incrementing version
-// Note: This is intentionally hardcoded rather than imported from package.json
-// to avoid bundling package.json metadata in the production build.
-// If you update the version, change this constant AND package.json version.
+// Note: This is intentionally hardcoded to avoid bundling package.json metadata
+// in the production build. When updating the version, change this constant AND
+// package.json version.
 const APP_VERSION = '0.4.0';
 
 export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
