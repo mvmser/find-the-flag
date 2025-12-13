@@ -204,7 +204,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
               className="text-input"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleTextSubmit()}
+              onKeyDown={(e) => e.key === 'Enter' && handleTextSubmit()}
               placeholder={t('game.typeCountryName', language)}
               disabled={answerState !== 'unanswered'}
               autoFocus
