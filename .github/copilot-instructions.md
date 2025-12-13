@@ -67,7 +67,6 @@ export function Component({ onAction }: ComponentProps) {
       <h1>{t('section.title', language)}</h1>
     </div>
   );
-  );
 }
 ```
 
