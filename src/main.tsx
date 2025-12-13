@@ -41,13 +41,31 @@ if ('serviceWorker' in navigator) {
 }
 
 function showUpdateNotification(worker: ServiceWorker) {
+  // Detect language from localStorage (same as LanguageContext)
+  const storedLanguage = localStorage.getItem('language') as 'en' | 'fr' | null;
+  const language = storedLanguage || 'en';
+  
+  // Bilingual notification texts
+  const texts = {
+    en: {
+      message: 'A new version is available!',
+      button: 'Update Now'
+    },
+    fr: {
+      message: 'Une nouvelle version est disponible!',
+      button: 'Mettre à jour'
+    }
+  };
+  
+  const text = texts[language];
+  
   // Create notification element
   const notification = document.createElement('div');
   notification.className = 'update-notification';
   notification.innerHTML = `
     <div class="update-notification-content">
-      <p class="update-notification-text">A new version is available!</p>
-      <button class="btn btn-primary btn-small update-btn">Update Now</button>
+      <p class="update-notification-text">${text.message}</p>
+      <button class="btn btn-primary btn-small update-btn">${text.button}</button>
     </div>
   `;
   

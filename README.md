@@ -140,24 +140,26 @@ The application includes an automatic update detection system that ensures users
 
 #### Version Management
 
-The app version is displayed in the footer of the home page and should be incremented with each pull request:
+The app version is displayed in the footer of the home page and should be incremented with each pull request. When incrementing the version, you need to update it in **three places**:
 
-1. Update the version in `package.json`:
+1. **Update `package.json`**:
    ```json
    {
      "version": "0.4.0"
    }
    ```
 
-2. Update the version constant in `src/components/HomePage.tsx`:
+2. **Update the version constant in `src/components/HomePage.tsx`**:
    ```typescript
    const APP_VERSION = '0.4.0';
    ```
 
-3. Update the service worker cache versions in `public/sw.js`:
+3. **Update the service worker cache versions in `public/sw.js`** (increment the suffix number):
    ```javascript
    const CACHE_NAME = 'find-the-flag-v2';
    const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
+   ```
+   Example: When updating from v0.4.0 to v0.5.0, change `v2` to `v3`
    ```
 
 **Version Increment Guidelines:**

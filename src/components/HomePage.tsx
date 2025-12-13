@@ -9,7 +9,10 @@ interface HomePageProps {
   onOpenSettings: () => void;
 }
 
-// Import version from package.json
+// Version number - update this when incrementing version
+// Note: This is intentionally hardcoded rather than imported from package.json
+// because Vite doesn't support JSON imports in components without additional config.
+// When updating the version, change this constant AND package.json version.
 const APP_VERSION = '0.4.0';
 
 export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
