@@ -74,9 +74,10 @@ export function Component({ onAction }: ComponentProps) {
 
 ### Translation Keys
 - Use the `t()` function from `src/i18n/index.ts` for all user-facing text
-- Signature: `t(key: TranslationKey, language: Language): string`
-  - `TranslationKey` is a derived type from nested translation keys (auto-completed)
-  - `Language` is `'en' | 'fr'`
+- Signature: `t(key, language)` where:
+  - `key` is a `TranslationKey` (derived type from nested keys with auto-completion)
+  - `language` is `'en' | 'fr'` (Language type)
+  - Returns: `string`
 - Translation keys use dot notation: `'section.key'`
 - Define translations in both `src/i18n/en.ts` and `src/i18n/fr.ts`
 
@@ -127,9 +128,9 @@ export function Component({ onAction }: ComponentProps) {
 ### Class Names
 - Use descriptive, semantic class names
 - Avoid inline styles; use CSS classes
-- Dynamic classes: build an array of class names and join with `classNames.join(' ')`
-  - Pattern 1 (local mutation is acceptable): `const classNames = ['base-class']; if (condition) classNames.push('modifier'); return classNames.join(' ');`
-  - Pattern 2 (functional): `const classNames = ['base-class', condition && 'modifier'].filter(Boolean).join(' ');`
+- Dynamic classes: build class name strings using one of these patterns:
+  - **Preferred (immutable)**: `const classNames = ['base-class', condition && 'modifier'].filter(Boolean).join(' ');`
+  - **Acceptable (local scope)**: Within a local helper function, you may use `push()` on a local array variable, as seen in `getButtonClass()` in GamePage
 
 ## Data Management
 
