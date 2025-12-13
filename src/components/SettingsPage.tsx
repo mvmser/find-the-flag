@@ -57,7 +57,7 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
 
   const handlePseudonymChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Validate: trim and enforce max length before updating state and storage
-    const sanitized = e.target.value.trim().slice(0, PSEUDONYM_MAX_LENGTH);
+    const sanitized = e.target.value.trim().substring(0, PSEUDONYM_MAX_LENGTH);
     setPseudonym(sanitized);
     savePseudonym(sanitized);
   };
