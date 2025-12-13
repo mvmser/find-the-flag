@@ -92,20 +92,22 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
           </div>
         </div>
 
-        <div className="settings-section">
-          <h2 className="settings-section-title">{t('settings.optionCount', language)}</h2>
-          <div className="option-count-buttons">
-            {[4, 6, 8].map((count) => (
-              <button
-                key={count}
-                className={`btn ${settings.optionCount === count ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => handleOptionCountChange(count as 4 | 6 | 8)}
-              >
-                {count} {t('settings.options', language)}
-              </button>
-            ))}
+        {settings.gameMode === 'multiple-choice' && (
+          <div className="settings-section">
+            <h2 className="settings-section-title">{t('settings.optionCount', language)}</h2>
+            <div className="option-count-buttons">
+              {[4, 6, 8].map((count) => (
+                <button
+                  key={count}
+                  className={`btn ${settings.optionCount === count ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => handleOptionCountChange(count as 4 | 6 | 8)}
+                >
+                  {count} {t('settings.options', language)}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="settings-section">
           <h2 className="settings-section-title">{t('settings.timer', language)}</h2>
