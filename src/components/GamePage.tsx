@@ -10,7 +10,7 @@ import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
 import { LanguageToggle } from './LanguageToggle';
 import { Timer } from './Timer';
-import { loadTotalScore, saveTotalScore, loadSettings, loadPseudonym } from '../utils/storage';
+import { loadTotalScore, saveTotalScore, loadSettings, loadPseudonym, PSEUDONYM_MAX_LENGTH } from '../utils/storage';
 
 interface GamePageProps {
   onGoHome: () => void;
@@ -33,6 +33,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const [selectedOption, setSelectedOption] = useState<Country | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
   const [textInput, setTextInput] = useState('');
+  const [showCopyNotification, setShowCopyNotification] = useState(false);
 
   const normalizeText = (text: string): string => {
     return text
@@ -123,7 +124,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const handleShare = () => {
     const pseudonym = loadPseudonym() || 'Anonymous';
     // Validate and sanitize pseudonym for URL
-    const sanitizedPseudonym = pseudonym.trim().substring(0, 20);
+    const sanitizedPseudonym = pseudonym.trim().substring(0, PSEUDONYM_MAX_LENGTH);
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?username=${encodeURIComponent(sanitizedPseudonym)}&score=${totalScore}`;
     
@@ -140,9 +141,10 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert('Link copied to clipboard!');
+        setShowCopyNotification(true);
+        setTimeout(() => setShowCopyNotification(false), 3000);
       }).catch(() => {
-        // Fallback: show the URL
+        // Final fallback: show the URL in prompt
         prompt('Copy this link to share your score:', shareUrl);
       });
     }
@@ -283,6 +285,12 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
           </div>
         )}
       </div>
+      
+      {showCopyNotification && (
+        <div className="copy-notification">
+          {t('game.linkCopied', language)}
+        </div>
+      )}
     </div>
   );
 }

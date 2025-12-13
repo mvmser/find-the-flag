@@ -23,6 +23,7 @@ export const en = {
     typeCountryName: 'Type the country name...',
     submit: 'Submit',
     shareScore: 'Share Score',
+    linkCopied: 'Link copied to clipboard!',
   },
   settings: {
     title: 'Settings',

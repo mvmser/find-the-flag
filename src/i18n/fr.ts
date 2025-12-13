@@ -25,6 +25,7 @@ export const fr: TranslationKeys = {
     typeCountryName: 'Tapez le nom du pays...',
     submit: 'Soumettre',
     shareScore: 'Partager le Score',
+    linkCopied: 'Lien copié dans le presse-papiers!',
   },
   settings: {
     title: 'Paramètres',

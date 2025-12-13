@@ -5,7 +5,7 @@ import { GamePage } from './components/GamePage';
 import { SettingsPage } from './components/SettingsPage';
 import { ScorePage } from './components/ScorePage';
 import { GameSettings } from './types';
-import { loadSettings } from './utils/storage';
+import { loadSettings, PSEUDONYM_MAX_LENGTH } from './utils/storage';
 import './styles/App.css';
 
 type Page = 'home' | 'game' | 'settings' | 'score';
@@ -24,7 +24,7 @@ function App() {
     if (username && score) {
       const scoreValue = parseInt(score, 10);
       // Validate username and score
-      const sanitizedUsername = username.trim().substring(0, 20);
+      const sanitizedUsername = username.trim().substring(0, PSEUDONYM_MAX_LENGTH);
       if (!isNaN(scoreValue) && scoreValue >= 0 && sanitizedUsername) {
         setSharedScore({ username: sanitizedUsername, score: scoreValue });
         setCurrentPage('score');
