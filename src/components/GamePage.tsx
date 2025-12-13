@@ -10,7 +10,7 @@ import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
 import { LanguageToggle } from './LanguageToggle';
 import { Timer } from './Timer';
-import { loadTotalScore, saveTotalScore, loadSettings } from '../utils/storage';
+import { loadTotalScore, saveTotalScore, loadSettings, loadPseudonym, encodeScoreData } from '../utils/storage';
 
 interface GamePageProps {
   onGoHome: () => void;
@@ -33,6 +33,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const [selectedOption, setSelectedOption] = useState<Country | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
   const [textInput, setTextInput] = useState('');
+  const [showCopyNotification, setShowCopyNotification] = useState(false);
 
   const normalizeText = (text: string): string => {
     return text
@@ -120,6 +121,33 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     setAnswerState('unanswered');
   };
 
+  const handleShare = () => {
+    const pseudonym = loadPseudonym() || 'Anonymous';
+    const baseUrl = window.location.origin + window.location.pathname;
+    const encodedData = encodeScoreData(pseudonym, totalScore);
+    const shareUrl = `${baseUrl}?data=${encodeURIComponent(encodedData)}`;
+    
+    // Try to use Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: 'Find the Flag - My Score',
+        text: `${pseudonym} achieved a score of ${totalScore} in Find the Flag!`,
+        url: shareUrl,
+      }).catch(() => {
+        // User cancelled or error occurred - silently ignore
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setShowCopyNotification(true);
+        setTimeout(() => setShowCopyNotification(false), 3000);
+      }).catch(() => {
+        // Final fallback: show the URL in prompt
+        prompt('Copy this link to share your score:', shareUrl);
+      });
+    }
+  };
+
   const getCountryName = (country: Country) => {
     return language === 'fr' ? country.name_fr : country.name_en;
   };
@@ -170,6 +198,13 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
             {t('game.totalScore', language)}: {totalScore}
           </div>
         </div>
+        
+        <button
+          className="btn btn-secondary share-btn"
+          onClick={handleShare}
+        >
+          📤 {t('game.shareScore', language)}
+        </button>
 
         {settings.timerEnabled && (
           <Timer 
@@ -251,6 +286,12 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
           </div>
         )}
       </div>
+      
+      {showCopyNotification && (
+        <div className="copy-notification">
+          {t('game.linkCopied', language)}
+        </div>
+      )}
     </div>
   );
 }

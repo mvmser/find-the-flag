@@ -6,7 +6,7 @@ import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { LanguageToggle } from './LanguageToggle';
 import { ConfirmDialog } from './ConfirmDialog';
-import { loadSettings, saveSettings, loadTotalScore, resetTotalScore } from '../utils/storage';
+import { loadSettings, saveSettings, loadTotalScore, resetTotalScore, loadPseudonym, savePseudonym, PSEUDONYM_MAX_LENGTH } from '../utils/storage';
 
 interface SettingsPageProps {
   onBack: () => void;
@@ -17,6 +17,7 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
   const { language } = useLanguage();
   const [settings, setSettings] = useState<GameSettings>(loadSettings());
   const [totalScore, setTotalScore] = useState(loadTotalScore());
+  const [pseudonym, setPseudonym] = useState(loadPseudonym());
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const handleOptionCountChange = (count: 4 | 6 | 8) => {
@@ -54,6 +55,13 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
     setShowConfirmDialog(false);
   };
 
+  const handlePseudonymChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Validate: trim and enforce max length before updating state and storage
+    const sanitized = e.target.value.trim().substring(0, PSEUDONYM_MAX_LENGTH);
+    setPseudonym(sanitized);
+    savePseudonym(sanitized);
+  };
+
   return (
     <div className="page settings-page">
       <div className="settings-header">
@@ -65,6 +73,18 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
 
       <div className="settings-content">
         <h1 className="settings-title">{t('settings.title', language)}</h1>
+
+        <div className="settings-section">
+          <h2 className="settings-section-title">{t('settings.pseudonym', language)}</h2>
+          <input
+            type="text"
+            className="text-input pseudonym-input"
+            value={pseudonym}
+            onChange={handlePseudonymChange}
+            placeholder={t('settings.enterPseudonym', language)}
+            maxLength={PSEUDONYM_MAX_LENGTH}
+          />
+        </div>
 
         <div className="settings-section">
           <h2 className="settings-section-title">{t('game.totalScore', language)}</h2>

@@ -13,6 +13,7 @@
   max-width: 800px;
   margin: 0 auto;
   width: 100%;
+  min-height: 0;
 }
 
 /* Language Toggle */
@@ -60,7 +61,7 @@
 
 /* Home Page */
 .home-page {
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
 }
 
@@ -69,6 +70,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xl);
+  flex: 1;
+  justify-content: center;
 }
 
 .home-title {
@@ -83,6 +86,14 @@
   color: var(--color-text-secondary);
   max-width: 500px;
   margin: 0;
+}
+
+.home-footer {
+  text-align: center;
+  padding: var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-lg);
 }
 
 /* Buttons */
@@ -522,6 +533,11 @@
   text-align: center;
 }
 
+.pseudonym-input {
+  width: 100%;
+  max-width: none;
+}
+
 /* Dialog/Modal */
 .dialog-overlay {
   position: fixed;
@@ -573,10 +589,90 @@
   min-width: 100px;
 }
 
+/* Score Page */
+.score-page {
+  justify-content: center;
+  text-align: center;
+}
+
+.score-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.score-title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.score-achievement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--color-primary);
+  min-width: 280px;
+}
+
+.score-username {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.score-text {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.score-value {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.share-btn {
+  width: 100%;
+  max-width: 400px;
+}
+
+.copy-notification {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-success);
+  color: white;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  font-weight: 600;
+  animation: slideUp 0.3s ease-out;
+  z-index: 1000;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Mobile Optimizations */
 @media (max-width: 640px) {
   .page {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-xs);
   }
 
   .game-page {
@@ -584,7 +680,13 @@
   }
 
   .game-content {
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
+    min-height: 0;
+  }
+  
+  .game-stats {
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
   }
 
   .home-title {
@@ -597,10 +699,27 @@
 
   .game-question {
     font-size: var(--font-size-base);
+    margin: var(--spacing-xs) 0;
   }
 
   .flag-container {
     max-width: 100%;
+    max-height: 180px;
+  }
+  
+  .flag-image {
+    max-height: 180px;
+  }
+  
+  .btn {
+    min-height: 44px;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .share-btn {
+    min-height: 44px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
   }
 
   .options-grid:not(.options-grid-6):not(.options-grid-8) {
