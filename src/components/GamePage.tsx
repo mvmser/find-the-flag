@@ -272,6 +272,12 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   // Check if game is complete
   const isGameComplete = gameState.total >= settings.questionCount;
 
+  // Cancel auto-advance timer when game is complete
+  useEffect(() => {
+    if (isGameComplete) {
+      cancelAutoAdvance();
+    }
+  }, [isGameComplete]);
   // Show game complete screen
   if (isGameComplete && answerState !== 'unanswered') {
     const elapsedTime = gameState.startTime ? Math.floor((Date.now() - gameState.startTime) / 1000) : 0;
