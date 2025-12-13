@@ -160,7 +160,15 @@ The app version is displayed in the footer of the home page and should be increm
    const CACHE_NAME = 'find-the-flag-v2';
    const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
    ```
-   Example: When updating from v0.4.0 to v0.5.0, change `v2` to `v3`
+   Example: When updating from v0.4.0 to v0.5.0, change `v2` to `v3`:
+   ```javascript
+   // Before (v0.4.0)
+   const CACHE_NAME = 'find-the-flag-v2';
+   const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
+   
+   // After (v0.5.0)
+   const CACHE_NAME = 'find-the-flag-v3';
+   const IMAGE_CACHE_NAME = 'find-the-flag-images-v3';
    ```
 
 **Version Increment Guidelines:**
