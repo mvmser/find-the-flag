@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
 } as const;
 
 export const PSEUDONYM_MAX_LENGTH = 20;
+export const MAX_SCORE = 999999; // Maximum reasonable score
 
 export const DEFAULT_SETTINGS: GameSettings = {
   optionCount: 4,
@@ -16,6 +17,37 @@ export const DEFAULT_SETTINGS: GameSettings = {
   timerDuration: 20,
   gameMode: 'multiple-choice',
 };
+
+// Score sharing encoding/decoding
+// Simple obfuscation to make it harder for users to manually craft URLs
+export function encodeScoreData(username: string, score: number): string {
+  const data = JSON.stringify({ u: username, s: score, t: Date.now() });
+  return btoa(data); // Base64 encode
+}
+
+export function decodeScoreData(encoded: string): { username: string; score: number } | null {
+  try {
+    const decoded = atob(encoded); // Base64 decode
+    const data = JSON.parse(decoded);
+    
+    // Validate structure
+    if (typeof data.u !== 'string' || typeof data.s !== 'number') {
+      return null;
+    }
+    
+    // Validate score bounds
+    if (isNaN(data.s) || data.s < 0 || data.s > MAX_SCORE) {
+      return null;
+    }
+    
+    // Sanitize username
+    const username = data.u.trim().substring(0, PSEUDONYM_MAX_LENGTH);
+    
+    return { username, score: data.s };
+  } catch {
+    return null;
+  }
+}
 
 // Total Score persistence
 export function loadTotalScore(): number {

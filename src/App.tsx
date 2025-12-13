@@ -5,7 +5,7 @@ import { GamePage } from './components/GamePage';
 import { SettingsPage } from './components/SettingsPage';
 import { ScorePage } from './components/ScorePage';
 import { GameSettings } from './types';
-import { loadSettings, PSEUDONYM_MAX_LENGTH } from './utils/storage';
+import { loadSettings, decodeScoreData } from './utils/storage';
 import './styles/App.css';
 
 type Page = 'home' | 'game' | 'settings' | 'score';
@@ -18,15 +18,12 @@ function App() {
   useEffect(() => {
     // Check URL parameters for shared score
     const params = new URLSearchParams(window.location.search);
-    const username = params.get('username');
-    const score = params.get('score');
+    const data = params.get('data');
     
-    if (username && score) {
-      const scoreValue = parseInt(score, 10);
-      // Validate username and score
-      const sanitizedUsername = username.trim().substring(0, PSEUDONYM_MAX_LENGTH);
-      if (!isNaN(scoreValue) && scoreValue >= 0) {
-        setSharedScore({ username: sanitizedUsername, score: scoreValue });
+    if (data) {
+      const decoded = decodeScoreData(data);
+      if (decoded) {
+        setSharedScore({ username: decoded.username, score: decoded.score });
         setCurrentPage('score');
       }
     }

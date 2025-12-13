@@ -10,7 +10,7 @@ import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
 import { LanguageToggle } from './LanguageToggle';
 import { Timer } from './Timer';
-import { loadTotalScore, saveTotalScore, loadSettings, loadPseudonym, PSEUDONYM_MAX_LENGTH } from '../utils/storage';
+import { loadTotalScore, saveTotalScore, loadSettings, loadPseudonym, encodeScoreData } from '../utils/storage';
 
 interface GamePageProps {
   onGoHome: () => void;
@@ -123,9 +123,9 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
   const handleShare = () => {
     const pseudonym = loadPseudonym() || 'Anonymous';
-    // Pseudonym is already sanitized when saved/loaded; no need to sanitize again
     const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?username=${encodeURIComponent(pseudonym)}&score=${totalScore}`;
+    const encodedData = encodeScoreData(pseudonym, totalScore);
+    const shareUrl = `${baseUrl}?data=${encodeURIComponent(encodedData)}`;
     
     // Try to use Web Share API if available
     if (navigator.share) {
@@ -133,9 +133,8 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
         title: 'Find the Flag - My Score',
         text: `${pseudonym} achieved a score of ${totalScore} in Find the Flag!`,
         url: shareUrl,
-      }).catch((error) => {
-        // User cancelled or error occurred
-        console.log('Share cancelled or failed:', error);
+      }).catch(() => {
+        // User cancelled or error occurred - silently ignore
       });
     } else {
       // Fallback: copy to clipboard
@@ -203,9 +202,8 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
         <button
           className="btn btn-secondary share-btn"
           onClick={handleShare}
-          title={t('game.shareTotalScoreTooltip', language)}
         >
-          📤 {t('game.shareTotalScore', language)}
+          📤 {t('game.shareScore', language)}
         </button>
 
         {settings.timerEnabled && (
