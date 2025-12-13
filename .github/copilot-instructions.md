@@ -38,6 +38,7 @@ Find the Flag is a mobile-first, fully static flag guessing web game built with 
 // 1. Imports
 import { useState } from 'react';
 import { useLanguage } from '../contexts/useLanguage';
+import { t } from '../i18n';
 
 // 2. Type definitions
 interface ComponentProps {
@@ -62,7 +63,10 @@ export function Component({ onAction }: ComponentProps) {
   
   // 7. JSX return
   return (
-    // ...
+    <div>
+      <h1>{t('section.title', language)}</h1>
+    </div>
+  );
   );
 }
 ```
@@ -70,13 +74,15 @@ export function Component({ onAction }: ComponentProps) {
 ## Internationalization (i18n)
 
 ### Translation Keys
-- Use the `t()` function from `src/i18n` for all user-facing text
+- Use the `t()` function from `src/i18n/index.ts` for all user-facing text
+- Signature: `t(key: TranslationKey, language: Language): string`
 - Translation keys use dot notation: `'section.key'`
 - Define translations in both `src/i18n/en.ts` and `src/i18n/fr.ts`
 
 ### Language Support
 - Support both English (`en`) and French (`fr`)
 - Get current language from `useLanguage()` hook
+- Pass language to `t()` function: `t('home.title', language)`
 - Never hard-code user-facing strings; always use `t()` function
 
 ### Country Names
