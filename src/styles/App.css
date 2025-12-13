@@ -439,10 +439,12 @@
 }
 
 /* Option Grid Variations */
+/* 6 options: 3 columns → 2 rows of 3 */
 .options-grid-6 {
   grid-template-columns: repeat(3, 1fr);
 }
 
+/* 8 options: 2 columns → 4 rows of 2 */
 .options-grid-8 {
   grid-template-columns: repeat(2, 1fr);
 }
@@ -604,6 +606,10 @@
   .options-grid:not(.options-grid-6):not(.options-grid-8) {
     grid-template-columns: 1fr;
     gap: var(--spacing-sm);
+  }
+
+  .options-grid-6 {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .game-actions {

@@ -39,9 +39,9 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
       .normalize('NFD') // Decompose combined characters
       .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
       .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s]/g, '')
-      .replace(/\s+/g, ' ');
+      .replace(/[^a-z0-9\s]/g, ' ') // Replace non-alphanumeric with spaces
+      .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
+      .trim();
   };
 
   const checkTextAnswer = (input: string): boolean => {
