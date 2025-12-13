@@ -952,13 +952,12 @@
 /* Error Boundary */
 .error-boundary {
   padding: var(--spacing-lg);
-  margin: var(--spacing-lg);
+  margin: var(--spacing-lg) auto;
   background-color: #fee;
   border: 1px solid #fcc;
   border-radius: var(--radius-lg);
   font-family: system-ui, -apple-system, sans-serif;
   max-width: 600px;
-  margin: var(--spacing-lg) auto;
 }
 
 .error-boundary__title {
