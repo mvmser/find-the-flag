@@ -21,6 +21,7 @@ A mobile-first, fully static flag guessing web game available in English and Fre
 - **🎯 Smart Question Generation**: Avoids repeating the same country consecutively
 - **💾 localStorage Persistence**: Total score and settings saved across sessions
 - **📲 PWA Support**: Install as an app on iPhone/Android with offline capability and flag image caching
+- **🔄 Auto-Update**: Automatic detection of new versions with prompt to update
 - **♿ Accessible**: Proper ARIA labels, focus states, and keyboard navigation
 - **🌙 Dark Mode**: Automatic dark mode support based on system preferences
 - **🚀 Zero Backend**: Fully static site with no server required
@@ -41,7 +42,9 @@ This project uses modern web technologies with minimal dependencies:
 - Pure TypeScript game logic with testable functions
 - Custom lightweight i18n system (no external library)
 - Context-based state management for language preferences
-- localStorage persistence for language selection
+- localStorage persistence for language selection and settings
+- Service worker with automatic update detection and cache management
+- Progressive Web App (PWA) with offline support
 - Flag images hotlinked from Wikimedia Commons (free, no downloads needed)
 
 ## 🚀 Getting Started
@@ -124,6 +127,44 @@ export default defineConfig({
 })
 ```
 
+### Auto-Update Functionality
+
+The application includes an automatic update detection system that ensures users always have the latest version:
+
+#### How It Works
+
+1. **Service Worker Updates**: The service worker checks for updates every 60 seconds
+2. **Cache Versioning**: Each deployment increments the cache version, forcing cache invalidation
+3. **Update Notification**: When a new version is detected, a notification banner appears at the top of the page
+4. **One-Click Update**: Users can click "Update Now" to reload the app with the latest version
+
+#### Version Management
+
+The app version is displayed in the footer of the home page and should be incremented with each pull request:
+
+1. Update the version in `package.json`:
+   ```json
+   {
+     "version": "0.4.0"
+   }
+   ```
+
+2. Update the version constant in `src/components/HomePage.tsx`:
+   ```typescript
+   const APP_VERSION = '0.4.0';
+   ```
+
+3. Update the service worker cache versions in `public/sw.js`:
+   ```javascript
+   const CACHE_NAME = 'find-the-flag-v2';
+   const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
+   ```
+
+**Version Increment Guidelines:**
+- **Patch version** (0.4.x): Bug fixes, minor UI tweaks, translation updates
+- **Minor version** (0.x.0): New features, settings additions, game mode enhancements
+- **Major version** (x.0.0): Breaking changes, complete redesigns, major feature overhauls
+
 ## 📁 Project Structure
 
 ```
@@ -159,7 +200,7 @@ find-the-flag/
 ├── public/                 # Static assets
 │   ├── icon.svg            # App icon
 │   ├── manifest.json       # PWA manifest
-│   └── sw.js               # Service worker
+│   └── sw.js               # Service worker with auto-update
 ├── index.html             # HTML entry point
 ├── package.json           # Dependencies and scripts
 ├── tsconfig.json          # TypeScript configuration
