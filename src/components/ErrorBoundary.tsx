@@ -37,15 +37,17 @@ export class ErrorBoundary extends Component<Props, State> {
           fontFamily: 'system-ui, -apple-system, sans-serif'
         }}>
           <h1 style={{ color: '#c00', marginTop: 0 }}>Something went wrong</h1>
-          <p>The application encountered an error:</p>
-          <pre style={{
-            backgroundColor: '#fafafa',
-            padding: '10px',
-            borderRadius: '4px',
-            overflow: 'auto'
-          }}>
-            {this.state.error?.toString()}
-          </pre>
+          <p>The application encountered an error. Please try reloading the page.</p>
+          {import.meta.env.DEV && this.state.error && (
+            <pre style={{
+              backgroundColor: '#fafafa',
+              padding: '10px',
+              borderRadius: '4px',
+              overflow: 'auto'
+            }}>
+              {this.state.error.toString()}
+            </pre>
+          )}
           <button
             onClick={() => window.location.reload()}
             style={{
