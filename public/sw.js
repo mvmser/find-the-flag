@@ -84,7 +84,7 @@ self.addEventListener('fetch', (event) => {
                event.request.destination === 'font' ||
                event.request.destination === 'image')) {
             caches.open(CACHE_NAME).then((cache) => {
-              return cache.put(event.request, networkResponse.clone());
+              cache.put(event.request, networkResponse.clone());
             }).catch((error) => {
               console.error('Failed to update cache for', event.request.url, error);
             });
