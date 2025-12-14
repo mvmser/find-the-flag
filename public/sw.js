@@ -45,8 +45,7 @@ self.addEventListener('fetch', (event) => {
   // For same-origin requests, use network-first strategy for HTML, stale-while-revalidate for assets
   if (url.origin === self.location.origin) {
     // Always fetch HTML from network to ensure latest version
-    if (event.request.mode === 'navigate' || event.request.destination === 'document' || 
-        event.request.url.endsWith('.html') || event.request.url.endsWith('/')) {
+    if (event.request.mode === 'navigate' || event.request.destination === 'document') {
       event.respondWith(
         fetch(event.request).catch(() => {
           return caches.match('/find-the-flag/index.html');
@@ -67,7 +66,9 @@ self.addEventListener('fetch', (event) => {
                event.request.destination === 'font' ||
                event.request.destination === 'image')) {
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
+              return cache.put(event.request, networkResponse.clone());
+            }).catch((error) => {
+              console.error('Failed to update cache for', event.request.url, error);
             });
           }
           return networkResponse;
