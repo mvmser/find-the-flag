@@ -1,17 +1,16 @@
 // Service Worker for offline support
 
-const CACHE_NAME = 'find-the-flag-v3';
-const IMAGE_CACHE_NAME = 'find-the-flag-images-v3';
-const urlsToCache = [
-  '/find-the-flag/',
-  '/find-the-flag/index.html',
-];
+const CACHE_NAME = 'find-the-flag-v4';
+const IMAGE_CACHE_NAME = 'find-the-flag-images-v4';
 
-// Install event - cache static assets
+// Install event - cache essential HTML for offline fallback
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+      .then((cache) => cache.addAll([
+        '/find-the-flag/index.html',
+        '/find-the-flag/'
+      ]))
       .then(() => self.skipWaiting())
   );
 });
@@ -48,32 +47,74 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // For Vite-generated assets (JS, CSS) and same-origin requests, use cache-first with network fallback
+  // For same-origin requests, use network-first strategy for HTML, stale-while-revalidate for assets
   if (url.origin === self.location.origin) {
+    // Always fetch HTML from network to ensure latest version
+    if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+      event.respondWith(
+        fetch(event.request).catch(() => {
+          // Try to serve cached index.html as fallback
+          return caches.match('/find-the-flag/index.html').then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // If no cache available, return a basic offline page
+            return new Response(
+              '<!DOCTYPE html><html><head><title>Offline / Hors ligne</title></head><body><h1>Offline / Hors ligne</h1><p>Please check your internet connection and try again.<br>Veuillez vérifier votre connexion Internet et réessayer.</p></body></html>',
+              {
+                status: 503,
+                statusText: 'Service Unavailable',
+                headers: new Headers({
+                  'Content-Type': 'text/html'
+                })
+              }
+            );
+          });
+        })
+      );
+      return;
+    }
+    
+    // For assets (JS, CSS, fonts, images), use stale-while-revalidate
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        
-        return fetch(event.request).then((networkResponse) => {
+        // Start fetching from network regardless of cache status
+        const fetchPromise = fetch(event.request).then((networkResponse) => {
           // Cache Vite assets (JS, CSS, fonts, images from assets folder)
           if (networkResponse && networkResponse.status === 200 &&
               (event.request.url.includes('/assets/') || 
                event.request.destination === 'script' || 
-               event.request.destination === 'style')) {
-            return caches.open(CACHE_NAME).then((cache) => {
+               event.request.destination === 'style' ||
+               event.request.destination === 'font' ||
+               event.request.destination === 'image')) {
+            caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, networkResponse.clone());
-              return networkResponse;
+            }).catch((error) => {
+              console.error('Failed to update cache for', event.request.url, error);
             });
           }
           return networkResponse;
         }).catch((error) => {
-          // Handle fetch errors for offline scenarios
-          console.error('Fetch failed:', error);
-          // Return a basic offline page if available in cache
-          return caches.match('/find-the-flag/index.html');
+          // Network fetch failed
+          console.error('Fetch failed for', event.request.url, error);
+          // If we have a cached response, it's already being returned
+          // If we don't, re-throw the error
+          if (!cachedResponse) {
+            throw error;
+          }
+          // Return undefined to indicate failure when cached response exists
+          // (the cached response is already returned on line 118)
+          return undefined;
         });
+        
+        // Stale-while-revalidate: return cached response immediately if available,
+        // otherwise wait for network fetch
+        if (cachedResponse) {
+          // Return cached response immediately, fetchPromise updates cache in background
+          return cachedResponse;
+        }
+        // No cached response, wait for network
+        return fetchPromise;
       })
     );
     return;

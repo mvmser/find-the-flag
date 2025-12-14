@@ -13,7 +13,7 @@ interface HomePageProps {
 // Note: This is intentionally hardcoded to avoid bundling package.json metadata
 // in the production build. When updating the version, change this constant AND
 // package.json version.
-const APP_VERSION = '0.4.0';
+const APP_VERSION = '0.4.1';
 
 export function HomePage({ onStartGame, onOpenSettings }: HomePageProps) {
   const { language } = useLanguage();
