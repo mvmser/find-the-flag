@@ -75,6 +75,7 @@ self.addEventListener('fetch', (event) => {
     // For assets (JS, CSS, fonts, images), use stale-while-revalidate
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
+        // Start fetching from network regardless of cache status
         const fetchPromise = fetch(event.request).then((networkResponse) => {
           // Cache Vite assets (JS, CSS, fonts, images from assets folder)
           if (networkResponse && networkResponse.status === 200 &&
@@ -91,16 +92,26 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         }).catch((error) => {
-          // If network fails and we have a cached response, use it
-          if (cachedResponse) {
-            return cachedResponse;
+          // Network fetch failed
+          console.error('Fetch failed for', event.request.url, error);
+          // If we have a cached response, it's already being returned
+          // If we don't, re-throw the error
+          if (!cachedResponse) {
+            throw error;
           }
-          console.error('Fetch failed and no cache available:', error);
-          throw error;
+          // Return undefined to indicate failure when cached response exists
+          // (the cached response is already returned on line 118)
+          return undefined;
         });
         
-        // Return cached response immediately if available, but still fetch in background
-        return cachedResponse || fetchPromise;
+        // Stale-while-revalidate: return cached response immediately if available,
+        // otherwise wait for network fetch
+        if (cachedResponse) {
+          // Return cached response immediately, fetchPromise updates cache in background
+          return cachedResponse;
+        }
+        // No cached response, wait for network
+        return fetchPromise;
       })
     );
     return;
