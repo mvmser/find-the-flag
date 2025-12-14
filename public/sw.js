@@ -3,10 +3,12 @@
 const CACHE_NAME = 'find-the-flag-v4';
 const IMAGE_CACHE_NAME = 'find-the-flag-images-v4';
 
-// Install event - skip waiting to activate immediately
+// Install event - cache essential HTML for offline fallback
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    self.skipWaiting()
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.add('/find-the-flag/index.html'))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -48,7 +50,23 @@ self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate' || event.request.destination === 'document') {
       event.respondWith(
         fetch(event.request).catch(() => {
-          return caches.match('/find-the-flag/index.html');
+          // Try to serve cached index.html as fallback
+          return caches.match('/find-the-flag/index.html').then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // If no cache available, return a basic offline page
+            return new Response(
+              '<!DOCTYPE html><html><head><title>Offline</title></head><body><h1>Offline</h1><p>Please check your internet connection and try again.</p></body></html>',
+              {
+                status: 503,
+                statusText: 'Service Unavailable',
+                headers: new Headers({
+                  'Content-Type': 'text/html'
+                })
+              }
+            );
+          });
         })
       );
       return;
