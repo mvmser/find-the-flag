@@ -57,7 +57,7 @@ self.addEventListener('fetch', (event) => {
             }
             // If no cache available, return a basic offline page
             return new Response(
-              '<!DOCTYPE html><html><head><title>Offline</title></head><body><h1>Offline</h1><p>Please check your internet connection and try again.</p></body></html>',
+              '<!DOCTYPE html><html><head><title>Offline / Hors ligne</title></head><body><h1>Offline / Hors ligne</h1><p>Please check your internet connection and try again.<br>Veuillez vérifier votre connexion Internet et réessayer.</p></body></html>',
               {
                 status: 503,
                 statusText: 'Service Unavailable',
