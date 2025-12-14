@@ -1,18 +1,12 @@
 // Service Worker for offline support
 
-const CACHE_NAME = 'find-the-flag-v3';
-const IMAGE_CACHE_NAME = 'find-the-flag-images-v3';
-const urlsToCache = [
-  '/find-the-flag/',
-  '/find-the-flag/index.html',
-];
+const CACHE_NAME = 'find-the-flag-v4';
+const IMAGE_CACHE_NAME = 'find-the-flag-images-v4';
 
-// Install event - cache static assets
+// Install event - skip waiting to activate immediately
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting())
+    self.skipWaiting()
   );
 });
 
@@ -48,32 +42,46 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // For Vite-generated assets (JS, CSS) and same-origin requests, use cache-first with network fallback
+  // For same-origin requests, use network-first strategy for HTML, stale-while-revalidate for assets
   if (url.origin === self.location.origin) {
+    // Always fetch HTML from network to ensure latest version
+    if (event.request.mode === 'navigate' || event.request.destination === 'document' || 
+        event.request.url.endsWith('.html') || event.request.url.endsWith('/')) {
+      event.respondWith(
+        fetch(event.request).catch(() => {
+          return caches.match('/find-the-flag/index.html');
+        })
+      );
+      return;
+    }
+    
+    // For assets (JS, CSS, fonts, images), use stale-while-revalidate
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        
-        return fetch(event.request).then((networkResponse) => {
+        const fetchPromise = fetch(event.request).then((networkResponse) => {
           // Cache Vite assets (JS, CSS, fonts, images from assets folder)
           if (networkResponse && networkResponse.status === 200 &&
               (event.request.url.includes('/assets/') || 
                event.request.destination === 'script' || 
-               event.request.destination === 'style')) {
-            return caches.open(CACHE_NAME).then((cache) => {
+               event.request.destination === 'style' ||
+               event.request.destination === 'font' ||
+               event.request.destination === 'image')) {
+            caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, networkResponse.clone());
-              return networkResponse;
             });
           }
           return networkResponse;
         }).catch((error) => {
-          // Handle fetch errors for offline scenarios
-          console.error('Fetch failed:', error);
-          // Return a basic offline page if available in cache
-          return caches.match('/find-the-flag/index.html');
+          // If network fails and we have a cached response, use it
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          console.error('Fetch failed and no cache available:', error);
+          throw error;
         });
+        
+        // Return cached response immediately if available, but still fetch in background
+        return cachedResponse || fetchPromise;
       })
     );
     return;
