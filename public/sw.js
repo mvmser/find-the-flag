@@ -1,7 +1,7 @@
 // Service Worker for offline support
 
-const CACHE_NAME = 'find-the-flag-v2';
-const IMAGE_CACHE_NAME = 'find-the-flag-images-v2';
+const CACHE_NAME = 'find-the-flag-v3';
+const IMAGE_CACHE_NAME = 'find-the-flag-images-v3';
 const urlsToCache = [
   '/find-the-flag/',
   '/find-the-flag/index.html',

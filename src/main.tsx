@@ -6,6 +6,9 @@ import { t } from './i18n'
 import type { Language } from './types'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
+// App version for cache busting
+export const APP_VERSION = '0.4.0';
+
 if (import.meta.env.DEV) {
   console.log('[Find the Flag] Starting application...');
 }
@@ -38,7 +41,9 @@ if ('serviceWorker' in navigator) {
     if (import.meta.env.DEV) {
       console.log('[Find the Flag] Registering service worker...');
     }
-    navigator.serviceWorker.register('/find-the-flag/sw.js')
+    // Add version parameter to force browser to check for SW updates
+    // This prevents browsers from caching old service worker files
+    navigator.serviceWorker.register(`/find-the-flag/sw.js?v=${APP_VERSION}`)
       .then((registration) => {
         if (import.meta.env.DEV) {
           console.log('[Find the Flag] Service worker registered successfully');
