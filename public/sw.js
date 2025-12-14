@@ -7,7 +7,10 @@ const IMAGE_CACHE_NAME = 'find-the-flag-images-v4';
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.add('/find-the-flag/index.html'))
+      .then((cache) => cache.addAll([
+        '/find-the-flag/index.html',
+        '/find-the-flag/'
+      ]))
       .then(() => self.skipWaiting())
   );
 });
