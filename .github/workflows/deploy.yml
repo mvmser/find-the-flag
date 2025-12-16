@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - copilot/fix-page-blank-issue
   workflow_dispatch:
 
 permissions:
