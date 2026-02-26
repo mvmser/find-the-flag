@@ -7,7 +7,7 @@ import type { Language } from './types'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 // App version for cache busting
-export const APP_VERSION = '0.4.1';
+export const APP_VERSION = '0.5.0';
 
 if (import.meta.env.DEV) {
   console.log('[Find the Flag] Starting application...');
