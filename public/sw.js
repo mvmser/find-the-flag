@@ -1,7 +1,7 @@
 // Service Worker for offline support
 
-const CACHE_NAME = 'find-the-flag-v5';
-const IMAGE_CACHE_NAME = 'find-the-flag-images-v5';
+const CACHE_NAME = 'find-the-flag-v6';
+const IMAGE_CACHE_NAME = 'find-the-flag-images-v6';
 
 // Install event - cache essential HTML for offline fallback
 self.addEventListener('install', (event) => {

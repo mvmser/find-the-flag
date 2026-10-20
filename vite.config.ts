@@ -5,4 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/find-the-flag/',
+  build: {
+    // Keep flag SVGs as separate files so they load (and get cached) on demand
+    assetsInlineLimit: 0,
+  },
 })

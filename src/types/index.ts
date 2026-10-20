@@ -1,8 +1,8 @@
 // Type definitions for the Find the Flag game
 
-import { Country } from '../data/countries';
+import { Country, Region } from '../data/countries';
 
-export type { Country };
+export type { Country, Region };
 
 export interface GameQuestion {
   correct: Country;
@@ -12,7 +12,6 @@ export interface GameQuestion {
 export interface GameState {
   score: number;
   total: number;
-  previousCorrectCode?: string;
   startTime?: number;
 }
 
@@ -24,7 +23,10 @@ export interface GameSettings {
   timerDuration: number;
   gameMode: GameMode;
   questionCount: number;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: Difficulty;
+  region: Region | 'all';
 }
+
+export type Difficulty = 'easy' | 'medium' | 'hard';
 
 export type Language = 'en' | 'fr';

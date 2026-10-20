@@ -17,9 +17,12 @@ A mobile-first, fully static flag guessing web game available in English and Fre
 - **📊 Score Tracking**: Keep track of correct answers with persistent total score saved locally
 - **⚙️ Customizable Settings**: Choose between 4, 6, or 8 answer options, toggle timer, select game mode, and set question count
 - **🎮 Game Modes**: Multiple choice or free-text input for different skill levels
-- **🎚️ Difficulty Levels**: Easy, Medium, or Hard modes to match your expertise
+- **🗺️ 197 Countries**: Every sovereign state, with English and French names
+- **🌍 Regional Challenges**: Play the whole world or focus on Europe, Africa, Asia, the Americas or Oceania
+- **🎚️ Difficulty Levels**: Easy (famous flags), Medium, or Hard (look-alike flags as wrong answers)
 - **⏱️ Timer Challenge**: Optional 20-second countdown with visual progress bar
-- **🎯 Smart Question Generation**: Avoids repeating the same country consecutively
+- **🎯 Smart Question Generation**: No flag repeats within a game
+- **✍️ Forgiving Free Text**: Accepts English, French and common alternative names (USA, UK, RDC…), accents optional
 - **💾 localStorage Persistence**: Total score and settings saved across sessions
 - **📲 PWA Support**: Install as an app on iPhone/Android with offline capability and flag image caching
 - **🔄 Auto-Update**: Automatic detection of new versions with prompt to update
@@ -46,7 +49,8 @@ This project uses modern web technologies with minimal dependencies:
 - localStorage persistence for language selection and settings
 - Service worker with automatic update detection and cache management
 - Progressive Web App (PWA) with offline support
-- Flag images hotlinked from Wikimedia Commons (free, no downloads needed)
+- Flag SVGs bundled from [flag-icons](https://github.com/lipis/flag-icons) and loaded on demand, so the game works fully offline
+- Unit tests for game logic with Vitest
 
 ## 🚀 Getting Started
 
@@ -85,6 +89,9 @@ npm run preview
 
 # Run linter
 npm run lint
+
+# Run tests
+npm test
 ```
 
 ## 🌐 Deployment to GitHub Pages
@@ -195,13 +202,15 @@ find-the-flag/
 │   │   ├── LanguageContext.tsx
 │   │   └── useLanguage.ts
 │   ├── data/
-│   │   └── countries.ts    # 48 countries with flag URLs
+│   │   ├── countries.ts    # 197 countries (names, region, difficulty, aliases)
+│   │   └── flags.ts        # Bundled flag image URLs
 │   ├── i18n/               # Internationalization
 │   │   ├── en.ts           # English translations
 │   │   ├── fr.ts           # French translations
 │   │   └── index.ts        # i18n utilities
 │   ├── lib/
-│   │   └── game.ts         # Pure game logic functions
+│   │   ├── game.ts         # Pure game logic functions
+│   │   └── game.test.ts    # Vitest unit tests
 │   ├── styles/
 │   │   ├── index.css       # Global styles & CSS variables
 │   │   └── App.css         # Component styles
@@ -224,7 +233,7 @@ find-the-flag/
 ## 🎯 How to Play
 
 1. **Start**: Click "Start Game" on the home page
-2. **Customize**: Visit Settings to adjust options count (4/6/8), difficulty level (Easy/Medium/Hard), game mode, timer, and question count
+2. **Customize**: Visit Settings to adjust options count (4/6/8), difficulty level (Easy/Medium/Hard), region, game mode, timer, and question count
 3. **Identify**: Look at the flag and choose the correct country from multiple options
 4. **Beat the Clock**: Answer within 20 seconds if timer is enabled
 5. **Track Progress**: Your total score persists across sessions
@@ -235,11 +244,7 @@ find-the-flag/
 
 ## 🖼️ Flag Images Attribution
 
-All flag images are sourced from **Wikimedia Commons** and are in the public domain or licensed under Creative Commons. Flags are hotlinked directly from Wikimedia's servers, requiring no local storage or downloads.
-
-- Flag images: [Wikimedia Commons](https://commons.wikimedia.org/)
-- Format: PNG files, 320px width for optimal performance
-- No attribution required for public domain flags, but we acknowledge Wikimedia's excellent resource
+Flag images come from [flag-icons](https://github.com/lipis/flag-icons) (MIT License). They are bundled with the app at build time and cached by the service worker, so no third-party server is needed.
 
 ## 🔮 Roadmap
 
@@ -253,13 +258,13 @@ Future enhancements planned for this game:
 - [x] **Difficulty Levels**: Easy, Medium, Hard modes ✅
 - [x] **Configurable Question Count**: Choose how many questions per game ✅
 - [x] **Score Sharing**: Share your achievements with friends ✅
-- [ ] **Regional Challenges**: Focus on specific continents (Africa, Asia, Europe, etc.)
+- [x] **Regional Challenges**: Focus on specific continents ✅
+- [x] **All Countries**: 197 flags, playable offline ✅
 - [ ] **Hint System**: Get clues about population, capital, or continent
 - [ ] **Achievements**: Unlock badges for milestones (10 correct, 50 correct, etc.)
 - [ ] **Sound Effects**: Audio feedback for correct/incorrect answers
 - [ ] **More Languages**: Spanish, German, Italian, Portuguese, etc.
 - [ ] **Statistics**: Track performance over time with charts
-- [ ] **Share Results**: Share your score on social media
 
 ## 📝 License
 
@@ -284,7 +289,7 @@ Contributions, issues, and feature requests are welcome!
 
 ## 🙏 Acknowledgments
 
-- Flag images from [Wikimedia Commons](https://commons.wikimedia.org/)
+- Flag images from [flag-icons](https://github.com/lipis/flag-icons)
 - Inspired by geography quiz games and educational tools
 - Built with modern web technologies and best practices
 

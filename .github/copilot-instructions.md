@@ -4,11 +4,12 @@
 
 Find the Flag is a mobile-first, fully static flag guessing web game built with React, TypeScript, and Vite. The game is bilingual (English and French) and requires no backend server.
 
-### Current Features (v0.4.0)
+### Current Features (v0.6.0)
 
 - **Bilingual Support**: Full English and French translations with instant language switching
 - **Game Modes**: Multiple choice or free-text input
 - **Difficulty Levels**: Easy, Medium, and Hard modes
+- **Regions**: World or a single continent, 197 countries
 - **Customizable Settings**: 
   - Answer options: 4, 6, or 8 choices
   - Timer: Configurable duration or disabled

@@ -1,10 +1,10 @@
 // Game page component
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Country } from '../data/countries';
 import { countries } from '../data/countries';
 import { GameState, GameSettings } from '../types';
-import { buildQuestion, buildQuestionWithDifficulty } from '../lib/game';
+import { buildQuestion, getQuestionPool, isCorrectTextAnswer } from '../lib/game';
 import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { FlagImage } from './FlagImage';
@@ -30,13 +30,24 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     startTime: Date.now(),
   });
   
-  // Helper function to build a new question based on difficulty
-  const buildNewQuestion = useCallback((previousCode?: string) => {
-    return settings.difficulty === 'easy'
-      ? buildQuestion(countries, previousCode, settings.optionCount)
-      : buildQuestionWithDifficulty(countries, settings.difficulty, previousCode, settings.optionCount);
-  }, [settings.difficulty, settings.optionCount]);
-  
+  const pool = useMemo(
+    () => getQuestionPool(countries, settings.difficulty, settings.region),
+    [settings.difficulty, settings.region]
+  );
+  // Countries already asked this game, so flags don't repeat
+  const askedRef = useRef<Set<string>>(new Set());
+
+  const buildNewQuestion = useCallback(() => {
+    if (askedRef.current.size >= pool.length) askedRef.current.clear();
+    const question = buildQuestion(pool, countries, {
+      exclude: askedRef.current,
+      optionCount: settings.optionCount,
+      useSimilar: settings.difficulty !== 'easy',
+    });
+    askedRef.current.add(question.correct.code);
+    return question;
+  }, [pool, settings.optionCount, settings.difficulty]);
+
   const [currentQuestion, setCurrentQuestion] = useState(() => buildNewQuestion());
   const [selectedOption, setSelectedOption] = useState<Country | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
@@ -45,23 +56,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState<number | null>(null);
   const autoAdvanceTimerRef = useRef<number | null>(null);
 
-  const normalizeText = (text: string): string => {
-    return text
-      .normalize('NFD') // Decompose combined characters
-      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, ' ') // Replace non-alphanumeric with spaces
-      .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
-      .trim();
-  };
-
-  const checkTextAnswer = (input: string): boolean => {
-    const normalized = normalizeText(input);
-    const correctEn = normalizeText(currentQuestion.correct.name_en);
-    const correctFr = normalizeText(currentQuestion.correct.name_fr);
-    
-    return normalized === correctEn || normalized === correctFr;
-  };
+  const checkTextAnswer = (input: string): boolean => isCorrectTextAnswer(input, currentQuestion.correct);
 
   const handleTextSubmit = () => {
     if (answerState !== 'unanswered' || !textInput.trim()) return;
@@ -72,7 +67,6 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
       ...prev,
       score: isCorrect ? prev.score + 1 : prev.score,
       total: prev.total + 1,
-      previousCorrectCode: currentQuestion.correct.code,
     }));
 
     if (isCorrect) {
@@ -95,7 +89,6 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
       ...prev,
       score: isCorrect ? prev.score + 1 : prev.score,
       total: prev.total + 1,
-      previousCorrectCode: currentQuestion.correct.code,
     }));
 
     if (isCorrect) {
@@ -112,7 +105,6 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
     if (answerState !== 'unanswered') return;
     
     // Mark as incorrect when time runs out
-    // Don't set previousCorrectCode since user didn't actively see the answer
     setAnswerState('incorrect');
     setGameState((prev) => ({
       ...prev,
@@ -156,7 +148,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
             autoAdvanceTimerRef.current = null;
           }
           // Inline next logic to avoid dependency
-          const newQuestion = buildNewQuestion(gameState.previousCorrectCode);
+          const newQuestion = buildNewQuestion();
           setCurrentQuestion(newQuestion);
           setSelectedOption(null);
           setTextInput('');
@@ -173,11 +165,11 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
         autoAdvanceTimerRef.current = null;
       }
     };
-  }, [autoAdvanceCountdown, buildNewQuestion, gameState.previousCorrectCode]);
+  }, [autoAdvanceCountdown, buildNewQuestion]);
 
   const handleNext = () => {
     cancelAutoAdvance();
-    const newQuestion = buildNewQuestion(gameState.previousCorrectCode);
+    const newQuestion = buildNewQuestion();
     setCurrentQuestion(newQuestion);
     setSelectedOption(null);
     setTextInput('');
@@ -185,16 +177,23 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
   };
 
   const handleSkip = () => {
+    if (answerState !== 'unanswered') return;
     // Skip counts as incorrect but shows next question immediately
     setGameState((prev) => ({
       ...prev,
       total: prev.total + 1,
-      previousCorrectCode: currentQuestion.correct.code,
     }));
+    if (gameState.total + 1 >= settings.questionCount) {
+      // Last question: mark it answered so the end screen shows
+      setAnswerState('incorrect');
+      return;
+    }
     handleNext();
   };
 
   const handleRestart = () => {
+    cancelAutoAdvance();
+    askedRef.current.clear();
     setGameState({ score: 0, total: 0, startTime: Date.now() });
     const newQuestion = buildNewQuestion();
     setCurrentQuestion(newQuestion);
@@ -357,6 +356,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
 
         {settings.timerEnabled && (
           <Timer 
+            key={gameState.total}
             duration={settings.timerDuration} 
             onTimeUp={handleTimeUp}
             isActive={answerState === 'unanswered'}
@@ -364,6 +364,7 @@ export function GamePage({ onGoHome, settings: propsSettings }: GamePageProps) {
         )}
 
         <FlagImage
+          key={currentQuestion.correct.code}
           flagUrl={currentQuestion.correct.flagUrl}
           countryName={getCountryName(currentQuestion.correct)}
           onSkip={answerState === 'unanswered' ? handleSkip : undefined}

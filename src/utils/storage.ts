@@ -1,6 +1,7 @@
 // Utility functions for localStorage persistence
 
 import { GameSettings } from '../types';
+import { REGIONS } from '../data/countries';
 
 const STORAGE_KEYS = {
   TOTAL_SCORE: 'findTheFlag_totalScore',
@@ -18,6 +19,7 @@ export const DEFAULT_SETTINGS: GameSettings = {
   gameMode: 'multiple-choice',
   questionCount: 20,
   difficulty: 'easy',
+  region: 'all',
 };
 
 // Sanitize username to remove potentially problematic characters
@@ -147,6 +149,11 @@ export function loadSettings(): GameSettings {
       // Validate difficulty
       if (parsed.difficulty === 'easy' || parsed.difficulty === 'medium' || parsed.difficulty === 'hard') {
         validatedSettings.difficulty = parsed.difficulty;
+      }
+      
+      // Validate region
+      if (parsed.region === 'all' || REGIONS.includes(parsed.region)) {
+        validatedSettings.region = parsed.region;
       }
       
       // Return only validated properties, ignoring any obsolete ones from parsed
