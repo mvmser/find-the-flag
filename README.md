@@ -4,7 +4,7 @@ A mobile-first, fully static flag guessing web game available in English and Fre
 
 ## 🎮 Play Now!
 
-**[Play Find the Flag](https://mvmser.github.io/find-the-flag/)** - Available now on GitHub Pages!
+**[Play Find the Flag](https://find-the-flag.netlify.app/)**
 
 ## 🎮 What is Find the Flag?
 
@@ -94,45 +94,16 @@ npm run lint
 npm test
 ```
 
-## 🌐 Deployment to GitHub Pages
+## 🌐 Deployment (Netlify)
 
-This project is automatically deployed to GitHub Pages using GitHub Actions.
+The app is hosted on Netlify at **https://find-the-flag.netlify.app/**.
 
-### Automatic Deployment
-
-The app is automatically built and deployed to GitHub Pages whenever changes are pushed to the `main` branch. The deployment workflow:
-
-1. Builds the project using `npm run build`
-2. Uploads the built files to GitHub Pages
-3. Makes the app accessible at `https://mvmser.github.io/find-the-flag/`
-
-### Manual Deployment
-
-You can also trigger a deployment manually:
-
-1. Go to the "Actions" tab in the GitHub repository
-2. Select "Deploy to GitHub Pages" workflow
-3. Click "Run workflow"
-
-### Local Build
-
-To build the project locally:
+- Every push to `main` deploys to production; every pull request gets a deploy preview.
+- Build settings, cache headers and the redirect from the old `/find-the-flag/` path live in `netlify.toml`.
+- GitHub Actions (`.github/workflows/ci.yml`) runs lint, tests and build on every PR.
 
 ```bash
-npm run build
-```
-
-This creates an optimized production build in the `dist/` folder.
-
-### Base Path Configuration
-
-The project is configured to deploy to a subdirectory (`https://mvmser.github.io/find-the-flag/`) with the base path set in `vite.config.ts`:
-
-```typescript
-export default defineConfig({
-  base: '/find-the-flag/', // Match your repo name
-  // ...rest of config
-})
+npm run build   # outputs dist/
 ```
 
 ### Auto-Update Functionality
@@ -148,7 +119,7 @@ The application includes an automatic update detection system that ensures users
 
 #### Version Management
 
-The app version is displayed in the footer of the home page and should be incremented with each pull request. When incrementing the version, you need to update it in **three places**:
+The app version is displayed in the footer of the home page and should be incremented with each pull request. When incrementing the version, you need to update it in these places:
 
 1. **Update `package.json`**:
    ```json
@@ -157,7 +128,7 @@ The app version is displayed in the footer of the home page and should be increm
    }
    ```
 
-2. **Update the version constant in `src/components/HomePage.tsx`**:
+2. **Update the version constants in `src/components/HomePage.tsx` and `src/main.tsx`**:
    ```typescript
    const APP_VERSION = '0.4.0';
    ```

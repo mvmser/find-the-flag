@@ -28,7 +28,7 @@ Find the Flag is a mobile-first, fully static flag guessing web game built with 
 - **Styling**: Pure CSS3 (no UI frameworks)
 - **State Management**: React Context API for language preferences
 - **i18n**: Custom lightweight implementation (no external library)
-- **Deployment**: Static site for GitHub Pages
+- **Deployment**: Static site on Netlify
 
 ## TypeScript Guidelines
 
