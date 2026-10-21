@@ -1,302 +1,240 @@
-// Country data with flag URLs from Wikimedia Commons
-// All flag images are hotlinked from Wikimedia Commons
+// Country data for Find the Flag
+// 197 sovereign states (UN members + observers + Kosovo & Taiwan).
+// Flag images are bundled locally (see ./flags.ts).
+
+import { flagUrlFor } from './flags';
+
+export type Region = 'europe' | 'africa' | 'asia' | 'americas' | 'oceania';
 
 export interface Country {
   code: string;
   name_en: string;
   name_fr: string;
   flagUrl: string;
-  difficulty?: 1 | 2 | 3; // 1=easy, 2=medium, 3=hard
-  flagColors?: string[]; // Primary colors for similarity matching
+  region: Region;
+  difficulty: 1 | 2 | 3; // 1=easy, 2=medium, 3=hard
+  aliases?: string[]; // Extra accepted answers in free-text mode
 }
 
-export const countries: Country[] = [
-  {
-    code: 'US',
-    name_en: 'United States',
-    name_fr: 'États-Unis',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/320px-Flag_of_the_United_States.svg.png'
-  },
-  {
-    code: 'CA',
-    name_en: 'Canada',
-    name_fr: 'Canada',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/320px-Flag_of_Canada_%28Pantone%29.svg.png'
-  },
-  {
-    code: 'MX',
-    name_en: 'Mexico',
-    name_fr: 'Mexique',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Mexico.svg/320px-Flag_of_Mexico.svg.png'
-  },
-  {
-    code: 'BR',
-    name_en: 'Brazil',
-    name_fr: 'Brésil',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/320px-Flag_of_Brazil.svg.png'
-  },
-  {
-    code: 'AR',
-    name_en: 'Argentina',
-    name_fr: 'Argentine',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/320px-Flag_of_Argentina.svg.png'
-  },
-  {
-    code: 'GB',
-    name_en: 'United Kingdom',
-    name_fr: 'Royaume-Uni',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Flag_of_the_United_Kingdom.svg/320px-Flag_of_the_United_Kingdom.svg.png'
-  },
-  {
-    code: 'FR',
-    name_en: 'France',
-    name_fr: 'France',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_France.svg/320px-Flag_of_France.svg.png'
-  },
-  {
-    code: 'DE',
-    name_en: 'Germany',
-    name_fr: 'Allemagne',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Germany.svg/320px-Flag_of_Germany.svg.png'
-  },
-  {
-    code: 'IT',
-    name_en: 'Italy',
-    name_fr: 'Italie',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/320px-Flag_of_Italy.svg.png'
-  },
-  {
-    code: 'ES',
-    name_en: 'Spain',
-    name_fr: 'Espagne',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/320px-Flag_of_Spain.svg.png'
-  },
-  {
-    code: 'PT',
-    name_en: 'Portugal',
-    name_fr: 'Portugal',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/320px-Flag_of_Portugal.svg.png'
-  },
-  {
-    code: 'NL',
-    name_en: 'Netherlands',
-    name_fr: 'Pays-Bas',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/320px-Flag_of_the_Netherlands.svg.png'
-  },
-  {
-    code: 'BE',
-    name_en: 'Belgium',
-    name_fr: 'Belgique',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Flag_of_Belgium.svg/320px-Flag_of_Belgium.svg.png'
-  },
-  {
-    code: 'CH',
-    name_en: 'Switzerland',
-    name_fr: 'Suisse',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Switzerland.svg/240px-Flag_of_Switzerland.svg.png'
-  },
-  {
-    code: 'SE',
-    name_en: 'Sweden',
-    name_fr: 'Suède',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Flag_of_Sweden.svg/320px-Flag_of_Sweden.svg.png'
-  },
-  {
-    code: 'NO',
-    name_en: 'Norway',
-    name_fr: 'Norvège',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Norway.svg/320px-Flag_of_Norway.svg.png'
-  },
-  {
-    code: 'DK',
-    name_en: 'Denmark',
-    name_fr: 'Danemark',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Flag_of_Denmark.svg/320px-Flag_of_Denmark.svg.png'
-  },
-  {
-    code: 'FI',
-    name_en: 'Finland',
-    name_fr: 'Finlande',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Flag_of_Finland.svg/320px-Flag_of_Finland.svg.png'
-  },
-  {
-    code: 'PL',
-    name_en: 'Poland',
-    name_fr: 'Pologne',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/320px-Flag_of_Poland.svg.png'
-  },
-  {
-    code: 'GR',
-    name_en: 'Greece',
-    name_fr: 'Grèce',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/320px-Flag_of_Greece.svg.png'
-  },
-  {
-    code: 'RU',
-    name_en: 'Russia',
-    name_fr: 'Russie',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Russia.svg/320px-Flag_of_Russia.svg.png'
-  },
-  {
-    code: 'JP',
-    name_en: 'Japan',
-    name_fr: 'Japon',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Flag_of_Japan.svg/320px-Flag_of_Japan.svg.png'
-  },
-  {
-    code: 'CN',
-    name_en: 'China',
-    name_fr: 'Chine',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_the_People%27s_Republic_of_China.svg/320px-Flag_of_the_People%27s_Republic_of_China.svg.png'
-  },
-  {
-    code: 'KR',
-    name_en: 'South Korea',
-    name_fr: 'Corée du Sud',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/320px-Flag_of_South_Korea.svg.png'
-  },
-  {
-    code: 'IN',
-    name_en: 'India',
-    name_fr: 'Inde',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_India.svg/320px-Flag_of_India.svg.png'
-  },
-  {
-    code: 'TH',
-    name_en: 'Thailand',
-    name_fr: 'Thaïlande',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_Thailand.svg/320px-Flag_of_Thailand.svg.png'
-  },
-  {
-    code: 'VN',
-    name_en: 'Vietnam',
-    name_fr: 'Viêt Nam',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/320px-Flag_of_Vietnam.svg.png'
-  },
-  {
-    code: 'ID',
-    name_en: 'Indonesia',
-    name_fr: 'Indonésie',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/320px-Flag_of_Indonesia.svg.png'
-  },
-  {
-    code: 'PH',
-    name_en: 'Philippines',
-    name_fr: 'Philippines',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Flag_of_the_Philippines.svg/320px-Flag_of_the_Philippines.svg.png'
-  },
-  {
-    code: 'AU',
-    name_en: 'Australia',
-    name_fr: 'Australie',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Flag_of_Australia_%28converted%29.svg/320px-Flag_of_Australia_%28converted%29.svg.png'
-  },
-  {
-    code: 'NZ',
-    name_en: 'New Zealand',
-    name_fr: 'Nouvelle-Zélande',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Flag_of_New_Zealand.svg/320px-Flag_of_New_Zealand.svg.png'
-  },
-  {
-    code: 'ZA',
-    name_en: 'South Africa',
-    name_fr: 'Afrique du Sud',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Flag_of_South_Africa.svg/320px-Flag_of_South_Africa.svg.png'
-  },
-  {
-    code: 'EG',
-    name_en: 'Egypt',
-    name_fr: 'Égypte',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/320px-Flag_of_Egypt.svg.png'
-  },
-  {
-    code: 'NG',
-    name_en: 'Nigeria',
-    name_fr: 'Nigéria',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Flag_of_Nigeria.svg/320px-Flag_of_Nigeria.svg.png'
-  },
-  {
-    code: 'KE',
-    name_en: 'Kenya',
-    name_fr: 'Kenya',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Flag_of_Kenya.svg/320px-Flag_of_Kenya.svg.png'
-  },
-  {
-    code: 'MA',
-    name_en: 'Morocco',
-    name_fr: 'Maroc',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag_of_Morocco.svg/320px-Flag_of_Morocco.svg.png'
-  },
-  {
-    code: 'TR',
-    name_en: 'Turkey',
-    name_fr: 'Turquie',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/320px-Flag_of_Turkey.svg.png'
-  },
-  {
-    code: 'SA',
-    name_en: 'Saudi Arabia',
-    name_fr: 'Arabie Saoudite',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Flag_of_Saudi_Arabia.svg/320px-Flag_of_Saudi_Arabia.svg.png'
-  },
-  {
-    code: 'AE',
-    name_en: 'United Arab Emirates',
-    name_fr: 'Émirats Arabes Unis',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Flag_of_the_United_Arab_Emirates.svg/320px-Flag_of_the_United_Arab_Emirates.svg.png'
-  },
-  {
-    code: 'IL',
-    name_en: 'Israel',
-    name_fr: 'Israël',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Flag_of_Israel.svg/320px-Flag_of_Israel.svg.png'
-  },
-  {
-    code: 'CL',
-    name_en: 'Chile',
-    name_fr: 'Chili',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Flag_of_Chile.svg/320px-Flag_of_Chile.svg.png'
-  },
-  {
-    code: 'CO',
-    name_en: 'Colombia',
-    name_fr: 'Colombie',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Colombia.svg/320px-Flag_of_Colombia.svg.png'
-  },
-  {
-    code: 'PE',
-    name_en: 'Peru',
-    name_fr: 'Pérou',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Flag_of_Peru.svg/320px-Flag_of_Peru.svg.png'
-  },
-  {
-    code: 'IS',
-    name_en: 'Iceland',
-    name_fr: 'Islande',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Iceland.svg/320px-Flag_of_Iceland.svg.png'
-  },
-  {
-    code: 'IE',
-    name_en: 'Ireland',
-    name_fr: 'Irlande',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Flag_of_Ireland.svg/320px-Flag_of_Ireland.svg.png'
-  },
-  {
-    code: 'AT',
-    name_en: 'Austria',
-    name_fr: 'Autriche',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/320px-Flag_of_Austria.svg.png'
-  },
-  {
-    code: 'CZ',
-    name_en: 'Czech Republic',
-    name_fr: 'République Tchèque',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Flag_of_the_Czech_Republic.svg/320px-Flag_of_the_Czech_Republic.svg.png'
-  },
-  {
-    code: 'UA',
-    name_en: 'Ukraine',
-    name_fr: 'Ukraine',
-    flagUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Flag_of_Ukraine.svg/320px-Flag_of_Ukraine.svg.png'
-  }
+export const REGIONS: Region[] = ['europe', 'africa', 'asia', 'americas', 'oceania'];
+
+type Row = [code: string, en: string, fr: string, region: Region, difficulty: 1 | 2 | 3, aliases?: string[]];
+
+const R: Row[] = [
+  // Europe
+  ['AL', 'Albania', 'Albanie', 'europe', 3],
+  ['AD', 'Andorra', 'Andorre', 'europe', 3],
+  ['AT', 'Austria', 'Autriche', 'europe', 2],
+  ['BY', 'Belarus', 'Biélorussie', 'europe', 3, ['Bélarus']],
+  ['BE', 'Belgium', 'Belgique', 'europe', 1],
+  ['BA', 'Bosnia and Herzegovina', 'Bosnie-Herzégovine', 'europe', 3, ['Bosnia', 'Bosnie']],
+  ['BG', 'Bulgaria', 'Bulgarie', 'europe', 3],
+  ['HR', 'Croatia', 'Croatie', 'europe', 2],
+  ['CY', 'Cyprus', 'Chypre', 'europe', 3],
+  ['CZ', 'Czechia', 'Tchéquie', 'europe', 2, ['Czech Republic', 'République tchèque']],
+  ['DK', 'Denmark', 'Danemark', 'europe', 1],
+  ['EE', 'Estonia', 'Estonie', 'europe', 3],
+  ['FI', 'Finland', 'Finlande', 'europe', 2],
+  ['FR', 'France', 'France', 'europe', 1],
+  ['DE', 'Germany', 'Allemagne', 'europe', 1],
+  ['GR', 'Greece', 'Grèce', 'europe', 1],
+  ['HU', 'Hungary', 'Hongrie', 'europe', 2],
+  ['IS', 'Iceland', 'Islande', 'europe', 2],
+  ['IE', 'Ireland', 'Irlande', 'europe', 2],
+  ['IT', 'Italy', 'Italie', 'europe', 1],
+  ['XK', 'Kosovo', 'Kosovo', 'europe', 3],
+  ['LV', 'Latvia', 'Lettonie', 'europe', 3],
+  ['LI', 'Liechtenstein', 'Liechtenstein', 'europe', 3],
+  ['LT', 'Lithuania', 'Lituanie', 'europe', 3],
+  ['LU', 'Luxembourg', 'Luxembourg', 'europe', 3],
+  ['MT', 'Malta', 'Malte', 'europe', 3],
+  ['MD', 'Moldova', 'Moldavie', 'europe', 3],
+  ['MC', 'Monaco', 'Monaco', 'europe', 2],
+  ['ME', 'Montenegro', 'Monténégro', 'europe', 3],
+  ['NL', 'Netherlands', 'Pays-Bas', 'europe', 1, ['Holland', 'Hollande']],
+  ['MK', 'North Macedonia', 'Macédoine du Nord', 'europe', 3, ['Macedonia', 'Macédoine']],
+  ['NO', 'Norway', 'Norvège', 'europe', 1],
+  ['PL', 'Poland', 'Pologne', 'europe', 2],
+  ['PT', 'Portugal', 'Portugal', 'europe', 1],
+  ['RO', 'Romania', 'Roumanie', 'europe', 2],
+  ['RU', 'Russia', 'Russie', 'europe', 1],
+  ['SM', 'San Marino', 'Saint-Marin', 'europe', 3],
+  ['RS', 'Serbia', 'Serbie', 'europe', 3],
+  ['SK', 'Slovakia', 'Slovaquie', 'europe', 3],
+  ['SI', 'Slovenia', 'Slovénie', 'europe', 3],
+  ['ES', 'Spain', 'Espagne', 'europe', 1],
+  ['SE', 'Sweden', 'Suède', 'europe', 1],
+  ['CH', 'Switzerland', 'Suisse', 'europe', 1],
+  ['UA', 'Ukraine', 'Ukraine', 'europe', 2],
+  ['GB', 'United Kingdom', 'Royaume-Uni', 'europe', 1, ['UK', 'Great Britain', 'Britain', 'England', 'Grande-Bretagne', 'Angleterre']],
+  ['VA', 'Vatican City', 'Vatican', 'europe', 3, ['Holy See', 'Saint-Siège', 'Cité du Vatican']],
+
+  // Africa
+  ['DZ', 'Algeria', 'Algérie', 'africa', 2],
+  ['AO', 'Angola', 'Angola', 'africa', 3],
+  ['BJ', 'Benin', 'Bénin', 'africa', 3],
+  ['BW', 'Botswana', 'Botswana', 'africa', 3],
+  ['BF', 'Burkina Faso', 'Burkina Faso', 'africa', 3],
+  ['BI', 'Burundi', 'Burundi', 'africa', 3],
+  ['CV', 'Cape Verde', 'Cap-Vert', 'africa', 3, ['Cabo Verde']],
+  ['CM', 'Cameroon', 'Cameroun', 'africa', 2],
+  ['CF', 'Central African Republic', 'République centrafricaine', 'africa', 3, ['Centrafrique', 'CAR']],
+  ['TD', 'Chad', 'Tchad', 'africa', 3],
+  ['KM', 'Comoros', 'Comores', 'africa', 3],
+  ['CG', 'Republic of the Congo', 'République du Congo', 'africa', 3, ['Congo', 'Congo-Brazzaville']],
+  ['CD', 'DR Congo', 'RD Congo', 'africa', 3, ['Democratic Republic of the Congo', 'République démocratique du Congo', 'RDC', 'DRC', 'Congo-Kinshasa']],
+  ['CI', 'Ivory Coast', "Côte d'Ivoire", 'africa', 2, ["Cote d'Ivoire"]],
+  ['DJ', 'Djibouti', 'Djibouti', 'africa', 3],
+  ['EG', 'Egypt', 'Égypte', 'africa', 1],
+  ['GQ', 'Equatorial Guinea', 'Guinée équatoriale', 'africa', 3],
+  ['ER', 'Eritrea', 'Érythrée', 'africa', 3],
+  ['SZ', 'Eswatini', 'Eswatini', 'africa', 3, ['Swaziland']],
+  ['ET', 'Ethiopia', 'Éthiopie', 'africa', 3],
+  ['GA', 'Gabon', 'Gabon', 'africa', 3],
+  ['GM', 'Gambia', 'Gambie', 'africa', 3, ['The Gambia']],
+  ['GH', 'Ghana', 'Ghana', 'africa', 2],
+  ['GN', 'Guinea', 'Guinée', 'africa', 3],
+  ['GW', 'Guinea-Bissau', 'Guinée-Bissau', 'africa', 3],
+  ['KE', 'Kenya', 'Kenya', 'africa', 2],
+  ['LS', 'Lesotho', 'Lesotho', 'africa', 3],
+  ['LR', 'Liberia', 'Libéria', 'africa', 3],
+  ['LY', 'Libya', 'Libye', 'africa', 3],
+  ['MG', 'Madagascar', 'Madagascar', 'africa', 3],
+  ['MW', 'Malawi', 'Malawi', 'africa', 3],
+  ['ML', 'Mali', 'Mali', 'africa', 3],
+  ['MR', 'Mauritania', 'Mauritanie', 'africa', 3],
+  ['MU', 'Mauritius', 'Maurice', 'africa', 3, ['Île Maurice', 'Ile Maurice']],
+  ['MA', 'Morocco', 'Maroc', 'africa', 1],
+  ['MZ', 'Mozambique', 'Mozambique', 'africa', 3],
+  ['NA', 'Namibia', 'Namibie', 'africa', 3],
+  ['NE', 'Niger', 'Niger', 'africa', 3],
+  ['NG', 'Nigeria', 'Nigéria', 'africa', 2],
+  ['RW', 'Rwanda', 'Rwanda', 'africa', 3],
+  ['ST', 'São Tomé and Príncipe', 'Sao Tomé-et-Principe', 'africa', 3, ['Sao Tome']],
+  ['SN', 'Senegal', 'Sénégal', 'africa', 2],
+  ['SC', 'Seychelles', 'Seychelles', 'africa', 3],
+  ['SL', 'Sierra Leone', 'Sierra Leone', 'africa', 3],
+  ['SO', 'Somalia', 'Somalie', 'africa', 3],
+  ['ZA', 'South Africa', 'Afrique du Sud', 'africa', 1],
+  ['SS', 'South Sudan', 'Soudan du Sud', 'africa', 3],
+  ['SD', 'Sudan', 'Soudan', 'africa', 3],
+  ['TZ', 'Tanzania', 'Tanzanie', 'africa', 3],
+  ['TG', 'Togo', 'Togo', 'africa', 3],
+  ['TN', 'Tunisia', 'Tunisie', 'africa', 2],
+  ['UG', 'Uganda', 'Ouganda', 'africa', 3],
+  ['ZM', 'Zambia', 'Zambie', 'africa', 3],
+  ['ZW', 'Zimbabwe', 'Zimbabwe', 'africa', 3],
+
+  // Asia (incl. Middle East)
+  ['AF', 'Afghanistan', 'Afghanistan', 'asia', 3],
+  ['AM', 'Armenia', 'Arménie', 'asia', 3],
+  ['AZ', 'Azerbaijan', 'Azerbaïdjan', 'asia', 3],
+  ['BH', 'Bahrain', 'Bahreïn', 'asia', 3],
+  ['BD', 'Bangladesh', 'Bangladesh', 'asia', 2],
+  ['BT', 'Bhutan', 'Bhoutan', 'asia', 3],
+  ['BN', 'Brunei', 'Brunei', 'asia', 3],
+  ['KH', 'Cambodia', 'Cambodge', 'asia', 3],
+  ['CN', 'China', 'Chine', 'asia', 1],
+  ['GE', 'Georgia', 'Géorgie', 'asia', 3],
+  ['IN', 'India', 'Inde', 'asia', 1],
+  ['ID', 'Indonesia', 'Indonésie', 'asia', 2],
+  ['IR', 'Iran', 'Iran', 'asia', 2],
+  ['IQ', 'Iraq', 'Irak', 'asia', 3],
+  ['IL', 'Israel', 'Israël', 'asia', 2],
+  ['JP', 'Japan', 'Japon', 'asia', 1],
+  ['JO', 'Jordan', 'Jordanie', 'asia', 3],
+  ['KZ', 'Kazakhstan', 'Kazakhstan', 'asia', 3],
+  ['KW', 'Kuwait', 'Koweït', 'asia', 3],
+  ['KG', 'Kyrgyzstan', 'Kirghizistan', 'asia', 3],
+  ['LA', 'Laos', 'Laos', 'asia', 3],
+  ['LB', 'Lebanon', 'Liban', 'asia', 2],
+  ['MY', 'Malaysia', 'Malaisie', 'asia', 2],
+  ['MV', 'Maldives', 'Maldives', 'asia', 3],
+  ['MN', 'Mongolia', 'Mongolie', 'asia', 3],
+  ['MM', 'Myanmar', 'Birmanie', 'asia', 3, ['Burma', 'Myanmar']],
+  ['NP', 'Nepal', 'Népal', 'asia', 2],
+  ['KP', 'North Korea', 'Corée du Nord', 'asia', 2],
+  ['OM', 'Oman', 'Oman', 'asia', 3],
+  ['PK', 'Pakistan', 'Pakistan', 'asia', 2],
+  ['PS', 'Palestine', 'Palestine', 'asia', 3],
+  ['PH', 'Philippines', 'Philippines', 'asia', 2],
+  ['QA', 'Qatar', 'Qatar', 'asia', 2],
+  ['SA', 'Saudi Arabia', 'Arabie saoudite', 'asia', 2],
+  ['SG', 'Singapore', 'Singapour', 'asia', 2],
+  ['KR', 'South Korea', 'Corée du Sud', 'asia', 1, ['Korea', 'Corée']],
+  ['LK', 'Sri Lanka', 'Sri Lanka', 'asia', 3],
+  ['SY', 'Syria', 'Syrie', 'asia', 3],
+  ['TW', 'Taiwan', 'Taïwan', 'asia', 3],
+  ['TJ', 'Tajikistan', 'Tadjikistan', 'asia', 3],
+  ['TH', 'Thailand', 'Thaïlande', 'asia', 2],
+  ['TL', 'Timor-Leste', 'Timor oriental', 'asia', 3, ['East Timor', 'Timor-Leste']],
+  ['TR', 'Turkey', 'Turquie', 'asia', 1, ['Türkiye']],
+  ['TM', 'Turkmenistan', 'Turkménistan', 'asia', 3],
+  ['AE', 'United Arab Emirates', 'Émirats arabes unis', 'asia', 2, ['UAE', 'EAU', 'Emirates', 'Émirats']],
+  ['UZ', 'Uzbekistan', 'Ouzbékistan', 'asia', 3],
+  ['VN', 'Vietnam', 'Viêt Nam', 'asia', 2, ['Viet Nam', 'Vietnam']],
+  ['YE', 'Yemen', 'Yémen', 'asia', 3],
+
+  // Americas
+  ['AG', 'Antigua and Barbuda', 'Antigua-et-Barbuda', 'americas', 3],
+  ['AR', 'Argentina', 'Argentine', 'americas', 1],
+  ['BS', 'Bahamas', 'Bahamas', 'americas', 3],
+  ['BB', 'Barbados', 'Barbade', 'americas', 3],
+  ['BZ', 'Belize', 'Belize', 'americas', 3],
+  ['BO', 'Bolivia', 'Bolivie', 'americas', 3],
+  ['BR', 'Brazil', 'Brésil', 'americas', 1],
+  ['CA', 'Canada', 'Canada', 'americas', 1],
+  ['CL', 'Chile', 'Chili', 'americas', 2],
+  ['CO', 'Colombia', 'Colombie', 'americas', 2],
+  ['CR', 'Costa Rica', 'Costa Rica', 'americas', 3],
+  ['CU', 'Cuba', 'Cuba', 'americas', 2],
+  ['DM', 'Dominica', 'Dominique', 'americas', 3],
+  ['DO', 'Dominican Republic', 'République dominicaine', 'americas', 3],
+  ['EC', 'Ecuador', 'Équateur', 'americas', 3],
+  ['SV', 'El Salvador', 'Salvador', 'americas', 3, ['El Salvador']],
+  ['GD', 'Grenada', 'Grenade', 'americas', 3],
+  ['GT', 'Guatemala', 'Guatemala', 'americas', 3],
+  ['GY', 'Guyana', 'Guyana', 'americas', 3],
+  ['HT', 'Haiti', 'Haïti', 'americas', 3],
+  ['HN', 'Honduras', 'Honduras', 'americas', 3],
+  ['JM', 'Jamaica', 'Jamaïque', 'americas', 2],
+  ['MX', 'Mexico', 'Mexique', 'americas', 1],
+  ['NI', 'Nicaragua', 'Nicaragua', 'americas', 3],
+  ['PA', 'Panama', 'Panama', 'americas', 3],
+  ['PY', 'Paraguay', 'Paraguay', 'americas', 3],
+  ['PE', 'Peru', 'Pérou', 'americas', 2],
+  ['KN', 'Saint Kitts and Nevis', 'Saint-Christophe-et-Niévès', 'americas', 3, ['Saint Kitts']],
+  ['LC', 'Saint Lucia', 'Sainte-Lucie', 'americas', 3],
+  ['VC', 'Saint Vincent and the Grenadines', 'Saint-Vincent-et-les-Grenadines', 'americas', 3, ['Saint Vincent']],
+  ['SR', 'Suriname', 'Suriname', 'americas', 3],
+  ['TT', 'Trinidad and Tobago', 'Trinité-et-Tobago', 'americas', 3],
+  ['US', 'United States', 'États-Unis', 'americas', 1, ['USA', 'US', 'America', 'United States of America', 'Amérique']],
+  ['UY', 'Uruguay', 'Uruguay', 'americas', 2],
+  ['VE', 'Venezuela', 'Venezuela', 'americas', 2],
+
+  // Oceania
+  ['AU', 'Australia', 'Australie', 'oceania', 1],
+  ['FJ', 'Fiji', 'Fidji', 'oceania', 3],
+  ['KI', 'Kiribati', 'Kiribati', 'oceania', 3],
+  ['MH', 'Marshall Islands', 'Îles Marshall', 'oceania', 3],
+  ['FM', 'Micronesia', 'Micronésie', 'oceania', 3],
+  ['NR', 'Nauru', 'Nauru', 'oceania', 3],
+  ['NZ', 'New Zealand', 'Nouvelle-Zélande', 'oceania', 1],
+  ['PW', 'Palau', 'Palaos', 'oceania', 3],
+  ['PG', 'Papua New Guinea', 'Papouasie-Nouvelle-Guinée', 'oceania', 3],
+  ['WS', 'Samoa', 'Samoa', 'oceania', 3],
+  ['SB', 'Solomon Islands', 'Îles Salomon', 'oceania', 3],
+  ['TO', 'Tonga', 'Tonga', 'oceania', 3],
+  ['TV', 'Tuvalu', 'Tuvalu', 'oceania', 3],
+  ['VU', 'Vanuatu', 'Vanuatu', 'oceania', 3],
 ];
+
+export const countries: Country[] = R.map(([code, name_en, name_fr, region, difficulty, aliases]) => ({
+  code,
+  name_en,
+  name_fr,
+  flagUrl: flagUrlFor(code),
+  region,
+  difficulty,
+  ...(aliases ? { aliases } : {}),
+}));

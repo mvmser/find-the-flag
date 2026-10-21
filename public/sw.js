@@ -1,15 +1,18 @@
 // Service Worker for offline support
 
-const CACHE_NAME = 'find-the-flag-v5';
-const IMAGE_CACHE_NAME = 'find-the-flag-images-v5';
+const CACHE_NAME = 'find-the-flag-v6';
+// Resolve app URLs against the service worker's scope so it works on any base path
+const INDEX_URL = new URL('index.html', self.registration.scope).href;
+const ROOT_URL = self.registration.scope;
+const IMAGE_CACHE_NAME = 'find-the-flag-images-v6';
 
 // Install event - cache essential HTML for offline fallback
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll([
-        '/find-the-flag/index.html',
-        '/find-the-flag/'
+        INDEX_URL,
+        ROOT_URL
       ]))
       .then(() => self.skipWaiting())
   );
@@ -19,8 +22,8 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
-  // Cache Wikipedia flag images
-  if (url.hostname === 'upload.wikimedia.org') {
+  // Cache flag images (bundled SVGs, plus legacy Wikimedia URLs)
+  if (url.hostname === 'upload.wikimedia.org' || (url.origin === self.location.origin && url.pathname.endsWith('.svg'))) {
     event.respondWith(
       caches.open(IMAGE_CACHE_NAME).then((cache) => {
         return cache.match(event.request).then((response) => {
@@ -54,7 +57,7 @@ self.addEventListener('fetch', (event) => {
       event.respondWith(
         fetch(event.request).catch(() => {
           // Try to serve cached index.html as fallback
-          return caches.match('/find-the-flag/index.html').then((cachedResponse) => {
+          return caches.match(INDEX_URL).then((cachedResponse) => {
             if (cachedResponse) {
               return cachedResponse;
             }

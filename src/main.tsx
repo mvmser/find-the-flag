@@ -7,7 +7,7 @@ import type { Language } from './types'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 // App version for cache busting
-export const APP_VERSION = '0.5.0';
+export const APP_VERSION = '0.6.0';
 
 if (import.meta.env.DEV) {
   console.log('[Find the Flag] Starting application...');
@@ -43,7 +43,7 @@ if ('serviceWorker' in navigator) {
     }
     // Add version parameter to force browser to check for SW updates
     // This prevents browsers from caching old service worker files
-    navigator.serviceWorker.register(`/find-the-flag/sw.js?v=${APP_VERSION}`)
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js?v=${APP_VERSION}`)
       .then((registration) => {
         if (import.meta.env.DEV) {
           console.log('[Find the Flag] Service worker registered successfully');
