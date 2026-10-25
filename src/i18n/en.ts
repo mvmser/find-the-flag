@@ -56,7 +56,16 @@ export const en = {
     easy: 'Easy',
     medium: 'Medium',
     hard: 'Hard',
+    region: 'Region',
     selectTimerDuration: 'Select Timer Duration',
+  },
+  regions: {
+    all: 'World',
+    europe: 'Europe',
+    africa: 'Africa',
+    asia: 'Asia',
+    americas: 'Americas',
+    oceania: 'Oceania',
   },
   flag: {
     alt: 'Flag of',

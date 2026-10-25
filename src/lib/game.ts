@@ -1,7 +1,7 @@
 // Pure game logic functions for Find the Flag
 
-import { Country } from '../data/countries';
-import { GameQuestion } from '../types';
+import { Country, Region } from '../data/countries';
+import { Difficulty, GameQuestion } from '../types';
 
 /**
  * Fisher-Yates shuffle algorithm for randomizing arrays
@@ -15,230 +15,139 @@ export function shuffle<T>(array: T[]): T[] {
   return shuffled;
 }
 
-/**
- * Pick a random country from the list, optionally excluding one
- */
-export function pickRandomCountry(
-  countries: Country[],
-  excludeCode?: string
-): Country {
-  const available = excludeCode
-    ? countries.filter((c) => c.code !== excludeCode)
-    : countries;
-  
-  if (available.length === 0) {
-    throw new Error('No countries available to pick');
-  }
-  
-  return available[Math.floor(Math.random() * available.length)];
-}
-
-// Easy: G7 countries + major powers + popular destinations
-const EASY_COUNTRIES = [
-  'US', 'CA', 'GB', 'FR', 'DE', 'IT', 'JP', // G7
-  'CN', 'IN', 'BR', 'RU', 'AU', 'MX', 'ES', // Major powers
-  'NL', 'CH', 'SE', 'NO', 'DK', 'GR', 'PT', // Popular European
-  'EG', 'ZA', 'AR', 'TR', 'TH', 'SG', 'NZ'  // Other well-known
-];
-
-// Hard: Small nations, island nations, less familiar countries
-const HARD_COUNTRIES = [
-  'LU', 'MT', 'CY', 'IS', 'EE', 'LV', 'LT', 'SI', 'SK',
-  'HR', 'BG', 'RO', 'RS', 'BA', 'MK', 'AL', 'ME',
-  'GE', 'AM', 'AZ', 'BY', 'MD', 'UA'
-];
-
-/**
- * Get difficulty rating for a country based on recognition
- * Well-known countries: 1 (easy)
- * Moderately known: 2 (medium)  
- * Lesser-known: 3 (hard)
- */
-export function getCountryDifficulty(country: Country): 1 | 2 | 3 {
-  // Override if difficulty is set
-  if (country.difficulty) return country.difficulty;
-  
-  if (EASY_COUNTRIES.includes(country.code)) return 1;
-  if (HARD_COUNTRIES.includes(country.code)) return 3;
-  return 2; // Medium by default
-}
-
-// Define flag similarity groups by dominant colors/patterns
-const SIMILARITY_GROUPS: { [key: string]: string[] } = {
-  // Tricolor vertical
-  'tricolor_vertical': ['FR', 'IT', 'BE', 'IE', 'RO', 'MD', 'TD'],
-  // Tricolor horizontal  
-  'tricolor_horizontal': ['NL', 'RU', 'HR', 'SK', 'SI', 'LU', 'BG', 'EE', 'LT', 'LV', 'AT'],
-  // Nordic cross
-  'nordic_cross': ['DK', 'NO', 'SE', 'FI', 'IS'],
-  // Red white
-  'red_white': ['CA', 'CH', 'DK', 'ID', 'MC', 'PL', 'SG', 'TR', 'TN', 'AT', 'LV'],
-  // Blue white red
-  'blue_white_red': ['FR', 'NL', 'RU', 'GB', 'US', 'AU', 'NZ', 'CZ', 'SK', 'SI'],
-  // Green white red
-  'green_white_red': ['IT', 'MX', 'HU', 'BG', 'IR'],
-  // Pan-Arab colors
-  'pan_arab': ['EG', 'SD', 'SY', 'IQ', 'YE', 'JO', 'PS', 'AE'],
-  // Pan-Slavic
-  'pan_slavic': ['RU', 'SK', 'SI', 'HR', 'RS', 'CZ'],
-  // Stars and stripes
-  'stars_stripes': ['US', 'MY', 'LR', 'CL', 'UY', 'GR'],
-  // Union Jack
-  'union_jack': ['GB', 'AU', 'NZ', 'FJ'],
-  // Green flags
-  'green': ['SA', 'PK', 'LY', 'BD', 'BR', 'NG', 'IE'],
-  // Simple bicolor
-  'bicolor': ['PL', 'ID', 'MC', 'MT', 'UA'],
+// Difficulty levels included for each setting, widened step by step
+// when a region doesn't have enough countries at the requested level.
+const DIFFICULTY_LEVELS: Record<Difficulty, (1 | 2 | 3)[][]> = {
+  easy: [[1], [1, 2], [1, 2, 3]],
+  medium: [[2], [1, 2], [1, 2, 3]],
+  hard: [[3], [2, 3], [1, 2, 3]],
 };
 
+/** Minimum pool size so a game doesn't feel repetitive */
+export const MIN_POOL_SIZE = 12;
+
 /**
- * Get countries that have similar flags based on colors/patterns
+ * Countries that can be asked for a given difficulty and region.
+ */
+export function getQuestionPool(
+  countries: Country[],
+  difficulty: Difficulty,
+  region: Region | 'all',
+  minSize: number = MIN_POOL_SIZE
+): Country[] {
+  const inRegion = region === 'all' ? countries : countries.filter((c) => c.region === region);
+  let pool: Country[] = inRegion;
+  for (const levels of DIFFICULTY_LEVELS[difficulty]) {
+    pool = inRegion.filter((c) => levels.includes(c.difficulty));
+    if (pool.length >= minSize) break;
+  }
+  return pool;
+}
+
+// Flags that look alike, used to pick tricky wrong answers in medium and hard
+const SIMILARITY_GROUPS: string[][] = [
+  ['FR', 'IT', 'BE', 'IE', 'RO', 'MD', 'TD', 'ML', 'GN', 'CI', 'NG', 'PE'], // vertical tricolors
+  ['NL', 'RU', 'HR', 'SK', 'SI', 'LU', 'RS', 'BG', 'HU', 'AT', 'LV', 'EE', 'LT', 'DE', 'BE', 'YE'], // horizontal tricolors
+  ['DK', 'NO', 'SE', 'FI', 'IS'], // Nordic cross
+  ['PL', 'ID', 'MC', 'SG', 'UA', 'MT'], // bicolors
+  ['US', 'MY', 'LR', 'UY', 'GR', 'CL', 'TG', 'PR'], // stripes and stars
+  ['GB', 'AU', 'NZ', 'FJ', 'TV'], // Union Jack
+  ['EG', 'SD', 'SY', 'IQ', 'YE', 'JO', 'PS', 'AE', 'KW'], // Pan-Arab
+  ['SA', 'PK', 'DZ', 'MR', 'BD', 'LY', 'TM'], // green Islamic flags
+  ['TR', 'TN', 'AZ', 'MV', 'DZ', 'LY'], // crescent and star
+  ['GH', 'SN', 'CM', 'ML', 'GN', 'BF', 'ET', 'BO', 'LT'], // Pan-African
+  ['CO', 'EC', 'VE'], // Gran Colombia
+  ['HN', 'SV', 'NI', 'GT', 'AR'], // blue-white-blue
+  ['QA', 'BH'], // serrated
+  ['CU', 'PR', 'DO'], // Caribbean
+  ['KR', 'KP', 'JP', 'BD', 'PW', 'LA'], // discs
+  ['CN', 'VN', 'TR', 'KG', 'MA'], // red with symbol
+];
+
+/**
+ * Countries whose flags look like the given one
  */
 export function getSimilarFlags(country: Country, allCountries: Country[]): Country[] {
-  
-  // Find which group this country belongs to
-  const countryGroups: string[] = [];
-  for (const [groupName, codes] of Object.entries(SIMILARITY_GROUPS)) {
-    if (codes.includes(country.code)) {
-      countryGroups.push(groupName);
+  const codes = new Set<string>();
+  for (const group of SIMILARITY_GROUPS) {
+    if (group.includes(country.code)) {
+      group.forEach((code) => code !== country.code && codes.add(code));
     }
   }
-  
-  // If no group found, return random countries
-  if (countryGroups.length === 0) {
-    return shuffle(allCountries.filter(c => c.code !== country.code)).slice(0, 10);
-  }
-  
-  // Collect all countries from the same groups
-  const similarCodes = new Set<string>();
-  for (const group of countryGroups) {
-    for (const code of SIMILARITY_GROUPS[group]) {
-      if (code !== country.code) {
-        similarCodes.add(code);
-      }
-    }
-  }
-  
-  // Return similar countries
-  return allCountries.filter(c => similarCodes.has(c.code));
+  return allCountries.filter((c) => codes.has(c.code));
+}
+
+export interface BuildQuestionOptions {
+  /** Countries already asked this game; avoided while possible */
+  exclude?: Set<string>;
+  optionCount?: number;
+  /** Prefer look-alike flags as wrong answers */
+  useSimilar?: boolean;
 }
 
 /**
- * Filter countries by difficulty level
- * Note: Ranges intentionally overlap to ensure enough variety at each level:
- * - Easy: includes level 1 and 2 countries (well-known and moderate)
- * - Medium: includes level 2 and 3 countries (moderate and lesser-known)
- * - Hard: includes level 3 and 2 countries (lesser-known and moderate)
- */
-export function filterByDifficulty(
-  countries: Country[],
-  difficulty: 'easy' | 'medium' | 'hard'
-): Country[] {
-  return countries.filter(c => {
-    const countryDiff = getCountryDifficulty(c);
-    
-    if (difficulty === 'easy') {
-      return countryDiff === 1 || countryDiff === 2; // Easy and medium countries
-    } else if (difficulty === 'medium') {
-      return countryDiff === 2 || countryDiff === 3; // Medium and hard countries
-    } else {
-      return countryDiff === 3 || countryDiff === 2; // Hard and medium countries
-    }
-  });
-}
-
-/**
- * Build a question with configurable difficulty and number of options
- */
-export function buildQuestionWithDifficulty(
-  countries: Country[],
-  difficulty: 'easy' | 'medium' | 'hard',
-  previousCorrectCode?: string,
-  optionCount: number = 4
-): GameQuestion {
-  // Filter countries by difficulty
-  const availableCountries = filterByDifficulty(countries, difficulty);
-  
-  if (availableCountries.length < optionCount) {
-    // Fallback to all countries if not enough
-    return buildQuestion(countries, previousCorrectCode, optionCount);
-  }
-
-  // Pick the correct answer from appropriate difficulty
-  const availableForCorrect = previousCorrectCode
-    ? availableCountries.filter(c => c.code !== previousCorrectCode)
-    : availableCountries;
-  
-  if (availableForCorrect.length === 0) {
-    return buildQuestion(countries, previousCorrectCode, optionCount);
-  }
-  
-  const correct = availableForCorrect[Math.floor(Math.random() * availableForCorrect.length)];
-  
-  // For medium and hard, try to get similar flags as incorrect options
-  let incorrect: Country[] = [];
-  
-  if (difficulty === 'medium' || difficulty === 'hard') {
-    const similarFlags = getSimilarFlags(correct, countries);
-    const availableSimilar = similarFlags.filter(c => c.code !== correct.code);
-    
-    if (availableSimilar.length >= optionCount - 1) {
-      // Use similar flags
-      const shuffledSimilar = shuffle(availableSimilar);
-      incorrect = shuffledSimilar.slice(0, optionCount - 1);
-    }
-  }
-  
-  // If we don't have enough similar flags, fill with random from appropriate difficulty
-  if (incorrect.length < optionCount - 1) {
-    const availableIncorrect = availableCountries.filter(
-      c => c.code !== correct.code && !incorrect.find(i => i.code === c.code)
-    );
-    const shuffledIncorrect = shuffle(availableIncorrect);
-    const needed = optionCount - 1 - incorrect.length;
-    incorrect = [...incorrect, ...shuffledIncorrect.slice(0, needed)];
-  }
-  
-  // Combine and shuffle all options
-  const options = shuffle([correct, ...incorrect]);
-  
-  return {
-    correct,
-    options,
-  };
-}
-
-/**
- * Build a question with configurable number of options (1 correct + N-1 random incorrect)
- * Ensures no duplicates and avoids repeating the previous correct answer
+ * Build a question: 1 correct country from the pool + (optionCount - 1) distinct wrong answers.
+ * Wrong answers come from look-alike flags (if requested), then the pool, then all countries.
  */
 export function buildQuestion(
-  countries: Country[],
-  previousCorrectCode?: string,
-  optionCount: number = 4
+  pool: Country[],
+  allCountries: Country[],
+  { exclude, optionCount = 4, useSimilar = false }: BuildQuestionOptions = {}
 ): GameQuestion {
-  if (countries.length < optionCount) {
+  if (allCountries.length < optionCount || pool.length === 0) {
     throw new Error(`Need at least ${optionCount} countries to build a question`);
   }
 
-  // Pick the correct answer (avoid the previous one if possible)
-  const correct = pickRandomCountry(countries, previousCorrectCode);
-  
-  // Pick N-1 random incorrect options (excluding the correct one)
-  const incorrect: Country[] = [];
-  const availableIncorrect = countries.filter((c) => c.code !== correct.code);
-  
-  // Use Fisher-Yates shuffle and take first N-1 for O(n) complexity
-  const shuffledIncorrect = shuffle(availableIncorrect);
-  for (let i = 0; i < Math.min(optionCount - 1, shuffledIncorrect.length); i++) {
-    incorrect.push(shuffledIncorrect[i]);
+  const fresh = exclude ? pool.filter((c) => !exclude.has(c.code)) : pool;
+  const candidates = fresh.length > 0 ? fresh : pool;
+  const correct = candidates[Math.floor(Math.random() * candidates.length)];
+
+  const picked = new Map<string, Country>();
+  const addFrom = (list: Country[]) => {
+    for (const c of shuffle(list)) {
+      if (picked.size >= optionCount - 1) return;
+      if (c.code !== correct.code && !picked.has(c.code)) picked.set(c.code, c);
+    }
+  };
+
+  if (useSimilar) {
+    // Keep a bit of randomness: at most half of the wrong answers are look-alikes
+    const similar = shuffle(getSimilarFlags(correct, allCountries));
+    const max = Math.max(1, Math.ceil((optionCount - 1) / 2));
+    addFrom(similar.slice(0, max));
   }
-  
-  // Combine and shuffle all options
-  const options = shuffle([correct, ...incorrect]);
-  
+  addFrom(pool);
+  addFrom(allCountries.filter((c) => c.region === correct.region));
+  addFrom(allCountries);
+
   return {
     correct,
-    options,
+    options: shuffle([correct, ...picked.values()]),
   };
+}
+
+/**
+ * Normalize a country name for free-text comparison:
+ * lowercase, no accents, no punctuation, no leading article.
+ */
+export function normalizeAnswer(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^(the|le|la|les|l) /, '');
+}
+
+/**
+ * Check a typed answer against the country's English, French and alias names.
+ */
+export function isCorrectTextAnswer(input: string, country: Country): boolean {
+  const answer = normalizeAnswer(input);
+  if (!answer) return false;
+  return [country.name_en, country.name_fr, ...(country.aliases ?? [])].some(
+    (name) => normalizeAnswer(name) === answer
+  );
 }

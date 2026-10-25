@@ -1,7 +1,8 @@
 // Settings page component
 
 import { useState } from 'react';
-import { GameSettings } from '../types';
+import { GameSettings, Region } from '../types';
+import { REGIONS } from '../data/countries';
 import { t } from '../i18n';
 import { useLanguage } from '../contexts/useLanguage';
 import { LanguageToggle } from './LanguageToggle';
@@ -50,6 +51,13 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
 
   const handleDifficultyChange = (difficulty: 'easy' | 'medium' | 'hard') => {
     const newSettings = { ...settings, difficulty };
+    setSettings(newSettings);
+    saveSettings(newSettings);
+    onSettingsChange(newSettings);
+  };
+
+  const handleRegionChange = (region: Region | 'all') => {
+    const newSettings = { ...settings, region };
     setSettings(newSettings);
     saveSettings(newSettings);
     onSettingsChange(newSettings);
@@ -186,6 +194,21 @@ export function SettingsPage({ onBack, onSettingsChange }: SettingsPageProps) {
             >
               {t('settings.hard', language)}
             </button>
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h2 className="settings-section-title">{t('settings.region', language)}</h2>
+          <div className="option-count-buttons">
+            {(['all', ...REGIONS] as const).map((region) => (
+              <button
+                key={region}
+                className={`btn ${settings.region === region ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => handleRegionChange(region)}
+              >
+                {t(`regions.${region}`, language)}
+              </button>
+            ))}
           </div>
         </div>
 

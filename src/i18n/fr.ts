@@ -58,7 +58,16 @@ export const fr: TranslationKeys = {
     easy: 'Facile',
     medium: 'Moyen',
     hard: 'Difficile',
+    region: 'Région',
     selectTimerDuration: 'Sélectionner la Durée du Minuteur',
+  },
+  regions: {
+    all: 'Monde',
+    europe: 'Europe',
+    africa: 'Afrique',
+    asia: 'Asie',
+    americas: 'Amériques',
+    oceania: 'Océanie',
   },
   flag: {
     alt: 'Drapeau de',
