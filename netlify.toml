@@ -5,6 +5,12 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Not indexed by search engines for now
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
 # The service worker and its manifest must always be revalidated so updates reach users
 [[headers]]
   for = "/sw.js"
